@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Maths 2 Exam Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fef2f2; /* red-50 */
+        }
+        .matrix-container {
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 4px;
+        }
+        .matrix-brackets {
+            font-size: 2.5em;
+            font-weight: 200;
+            color: #4b5563; /* gray-600 */
+        }
+        .matrix {
+            margin: 0 4px;
+            font-family: 'Lato', sans-serif;
+            text-align: center;
+        }
+        .matrix td { padding: 2px 6px; }
+        .solution-correct { color: #16a34a; /* green-600 */ }
+        .solution-incorrect { color: #dc2626; /* red-600 */ }
+        .option-label:hover { background-color: #fee2e2; /* red-100 */ }
+        .option-label input:checked + span {
+            font-weight: 600;
+            color: #b91c1c; /* red-700 */
+        }
+        .solution-card {
+            background: #fff;
+            border-left: 4px solid #f87171; /* red-400 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .pyq-tag {
+            display: inline-block;
+            background-color: #fecaca; /* red-200 */
+            color: #b91c1c; /* red-700 */
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-5xl">
+        <header class="text-center mb-4">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Maths 2 Exam Simulator</h1>
+            <p class="text-md text-gray-600 mt-2">Answer all questions to unlock the submit button. Good luck!</p>
+        </header>
+
+        <!-- Quiz Info Bar -->
+        <div class="sticky top-0 z-10 bg-rose-100/80 backdrop-blur-sm p-4 rounded-lg shadow-md mb-8 flex justify-between items-center">
+            <div>
+                <span class="font-bold text-gray-700">Questions Answered:</span>
+                <span id="questions-answered-count" class="font-bold text-red-700">0 / 12</span>
+            </div>
+            <div>
+                <span class="font-bold text-gray-700">Time Elapsed:</span>
+                <span id="master-timer" class="font-bold text-red-700">00:00</span>
+            </div>
+        </div>
+
+        <form id="quiz-form">
+            <div id="quiz-container" class="space-y-8">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+        </form>
+
+        <!-- Submission Area -->
+        <div class="mt-10 text-center">
+            <button id="submit-btn" type="button" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 transition duration-300 shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Submit Quiz</button>
+        </div>
+
+        <!-- Report Card Container -->
+        <div id="report-card-container" class="mt-12 hidden"></div>
+        
+        <!-- Solutions Container -->
+        <div id="solutions-container" class="mt-12 hidden space-y-6"></div>
+    </div>
+
+    <script>
+        const questionBank = {
+            setA: [
+                { id: 'q1', type: 'mcq', isPYQ: true, question: "Let T:R<sup>2</sup> → R<sup>2</sup> be a linear transformation with T(2,1)=(-1,-3) and T(1,2)=(-5,0). What is the matrix representation of T w.r.t. the standard basis?", options: [{ text: "<div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>-3</td></tr><tr><td>-2</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div>", value: "a" }, { text: "<div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>-2</td></tr><tr><td>-3</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div>", value: "b" }, { text: "<div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>-1</td><td>-5</td></tr><tr><td>-3</td><td>0</td></tr></table><span class='matrix-brackets'>]</span></div>", value: "c" }, { text: "<div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>-2</td><td>1</td></tr><tr><td>1</td><td>-3</td></tr></table><span class='matrix-brackets'>]</span></div>", value: "d" }], answer: "a", explanation: "<b>Step 1: Express standard basis vectors as linear combinations.</b><br>We need to find T(1,0) and T(0,1). First, express (1,0) and (0,1) in terms of (2,1) and (1,2).<br>(1,0) = c<sub>1</sub>(2,1) + c<sub>2</sub>(1,2) → 2c<sub>1</sub>+c<sub>2</sub>=1, c<sub>1</sub>+2c<sub>2</sub>=0. Solving gives c<sub>1</sub>=2/3, c<sub>2</sub>=-1/3.<br>(0,1) = d<sub>1</sub>(2,1) + d<sub>2</sub>(1,2) → 2d<sub>1</sub>+d<sub>2</sub>=0, d<sub>1</sub>+2d<sub>2</sub>=1. Solving gives d<sub>1</sub>=-1/3, d<sub>2</sub>=2/3.<br><b>Step 2: Use linearity to find T(1,0) and T(0,1).</b><br>T(1,0) = (2/3)T(2,1) - (1/3)T(1,2) = (2/3)(-1,-3) - (1/3)(-5,0) = (-2/3 + 5/3, -2 - 0) = (1, -2).<br>T(0,1) = -(1/3)T(2,1) + (2/3)T(1,2) = -(1/3)(-1,-3) + (2/3)(-5,0) = (1/3 - 10/3, 1 + 0) = (-3, 1).<br><b>Step 3: Form the matrix.</b><br>The columns of the matrix are T(1,0) and T(0,1). So, A = <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>-3</td></tr><tr><td>-2</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div>." },
+                { id: 'q2', type: 'msq', isPYQ: true, question: "If A and B are n × n square matrices, which statement(s) is/are always true?", options: [{ text: "If A and B are similar, they have the same determinant.", value: "a" }, { text: "If A and B have the same rank, they are similar.", value: "b" }, { text: "If A and B are equivalent, they are similar.", value: "c" }, { text: "If A and B are similar, A<sup>T</sup> and B<sup>T</sup> are similar.", value: "d" }], answer: ["a", "d"], explanation: "<b>(a) True:</b> If B = P<sup>-1</sup>AP, then det(B) = det(P<sup>-1</sup>)det(A)det(P) = det(A).<br><b>(b) False:</b> Same rank implies equivalence, not similarity. E.g., I = <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>0</td></tr><tr><td>0</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div> and A = <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>1</td></tr><tr><td>0</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div> both have rank 2 but are not similar.<br><b>(c) False:</b> Equivalence is a weaker condition than similarity. All invertible matrices are equivalent, but not all are similar.<br><b>(d) True:</b> If B = P<sup>-1</sup>AP, then B<sup>T</sup> = (P<sup>-1</sup>AP)<sup>T</sup> = P<sup>T</sup>A<sup>T</sup>(P<sup>-1</sup>)<sup>T</sup>. Let Q = (P<sup>T</sup>)<sup>-1</sup>. Then Q<sup>-1</sup> = P<sup>T</sup>. So B<sup>T</sup> = Q<sup>-1</sup>A<sup>T</sup>Q. Thus A<sup>T</sup> and B<sup>T</sup> are similar." },
+                { id: 'q3', type: 'mcq', isPYQ: true, question: "Which of the following vector spaces is isomorphic to R<sup>2</sup>?", options: [{ text: "V<sub>1</sub> = {(x,y,z) ∈ R<sup>3</sup> | x+y+z=0}", value: "a" }, { text: "V<sub>2</sub> = span{(1,0,1), (0,1,1), (1,1,2)}", value: "b" }, { text: "The column space of the matrix <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>2</td></tr><tr><td>2</td><td>4</td></tr></table><span class='matrix-brackets'>]</span></div>", value: "c" }, { text: "The space of 2x2 symmetric matrices", value: "d" }], answer: "a", explanation: "Two vector spaces are isomorphic if they have the same dimension. <br><b>(a) V<sub>1</sub></b> is a plane through the origin in R<sup>3</sup>. A basis is {(-1,1,0), (-1,0,1)}. It has dimension 2, so it is isomorphic to R<sup>2</sup>.<br><b>(b) V<sub>2</sub></b> is also a 2D subspace since (1,1,2) = (1,0,1) + (0,1,1). So this is also isomorphic. <br><b>(c)</b> The column space is 1D. <br><b>(d)</b> The space of 2x2 symmetric matrices has dimension 3. A basis is {<div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>0</td></tr><tr><td>0</td><td>0</td></tr></table><span class='matrix-brackets'>]</span></div>, <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>0</td><td>1</td></tr><tr><td>1</td><td>0</td></tr></table><span class='matrix-brackets'>]</span></div>, <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div>}." },
+                { id: 'q4', type: 'sa', isPYQ: true, question: "For what value of k is the rank of the matrix A = <div class='matrix-container'><span class='matrix-brackets'>(</span><table class='matrix'><tr><td>1</td><td>-2</td><td>1</td></tr><tr><td>2</td><td>k</td><td>0</td></tr><tr><td>0</td><td>4</td><td>-2</td></tr></table><span class='matrix-brackets'>)</span></div> equal to 2?", answer: "0", format: "Enter an integer.", explanation: "<b>Step 1: Understand the condition.</b><br>For the rank of a 3x3 matrix to be less than 3, its determinant must be zero.<br><b>Step 2: Calculate the determinant.</b><br>det(A) = 1 * (k*(-2) - 0*4) - (-2) * (2*(-2) - 0*0) + 1 * (2*4 - k*0)<br>det(A) = -2k - (-2)(-4) + 8<br>det(A) = -2k - 8 + 8<br>det(A) = -2k<br><b>Step 3: Solve for k.</b><br>Set det(A) = 0 → -2k = 0 → k = 0." },
+                { id: 'q5', type: 'sa', isPYQ: true, question: "What is the nullity of the linear transformation T:R<sup>3</sup> → R<sup>3</sup> given by T(x,y,z) = (x-y, y-z, z-x)?", answer: "1", format: "Enter an integer.", explanation: "<b>Step 1: Find the kernel (null space) of T.</b><br>The kernel is the set of vectors (x,y,z) such that T(x,y,z) = (0,0,0).<br>This gives the system of equations:<br>x - y = 0  → x = y<br>y - z = 0  → y = z<br>z - x = 0  → z = x<br><b>Step 2: Describe the solution set.</b><br>The solution is x = y = z. Any vector in the kernel is of the form (t, t, t) for some scalar t.<br><b>Step 3: Find a basis for the kernel.</b><br>The kernel is spanned by the single vector (1,1,1).<br><b>Step 4: Determine the nullity.</b><br>The nullity is the dimension of the kernel. Since the basis has one vector, the nullity is 1." },
+                { id: 'q6', type: 'mcq', isPYQ: true, question: "Which of the following is a basis for the image of the transformation T from the previous question?", options: [{ text: "{(1,0,-1), (-1,1,0)}", value: "a" }, { text: "{(1,1,1)}", value: "c" }, { text: "{(1,0,0), (0,1,0)}", value: "d" }, { text: "{(1,0,-1), (0,1,-1), (-1,1,0)}", value: "b" }], answer: "a", explanation: "<b>Step 1: Use the Rank-Nullity Theorem.</b><br>dim(Domain) = Rank(T) + Nullity(T). We know dim(R<sup>3</sup>) = 3 and Nullity(T) = 1 from the previous question. So, 3 = Rank(T) + 1 → Rank(T) = 2. The basis for the image must have 2 vectors.<br><b>Step 2: Find the image of the standard basis vectors.</b><br>T(1,0,0) = (1, 0, -1)<br>T(0,1,0) = (-1, 1, 0)<br>T(0,0,1) = (0, -1, 1)<br><b>Step 3: Find a linearly independent spanning set.</b><br>The image is spanned by {(1,0,-1), (-1,1,0), (0,-1,1)}. Notice that (0,-1,1) = -(1,0,-1) - (-1,1,0). So, the third vector is dependent on the first two. A basis is formed by the first two linearly independent vectors: {(1,0,-1), (-1,1,0)}." },
+                { id: 'q7', type: 'sa', isPYQ: false, question: "What is the projection of vector v = (3, 5) onto the vector u = (1, 1)? Enter as (x,y) with no spaces.", answer: "(4,4)", format: "Enter in the format (x,y).", explanation: "<b>Step 1: Use the projection formula.</b><br>proj<sub>u</sub>(v) = ( (v · u) / (u · u) ) * u<br><b>Step 2: Calculate the dot products.</b><br>v · u = (3)(1) + (5)(1) = 8<br>u · u = (1)(1) + (1)(1) = 2<br><b>Step 3: Compute the projection.</b><br>proj<sub>u</sub>(v) = (8 / 2) * (1, 1) = 4 * (1, 1) = (4, 4)." },
+                { id: 'q8', type: 'sa', isPYQ: false, question: "Let W = span{(1, 1, 0, 0), (0, 1, 1, 0)} be a subspace of R<sup>4</sup>. What is the dimension of its orthogonal complement, W<sup>⊥</sup>?", answer: "2", format: "Enter an integer.", explanation: "<b>Step 1: Use the Orthogonal Complement Theorem.</b><br>For any subspace W of R<sup>n</sup>, we have dim(W) + dim(W<sup>⊥</sup>) = n.<br><b>Step 2: Find the dimension of W.</b><br>The spanning vectors (1, 1, 0, 0) and (0, 1, 1, 0) are not scalar multiples of each other, so they are linearly independent. Therefore, they form a basis for W, and dim(W) = 2.<br><b>Step 3: Calculate dim(W<sup>⊥</sup>).</b><br>Here n=4. So, 2 + dim(W<sup>⊥</sup>) = 4 → dim(W<sup>⊥</sup>) = 2." },
+                { id: 'q9', type: 'msq', isPYQ: true, question: "If A is an n × n orthogonal matrix, which of the following statements must be true?", options: [{ text: "A<sup>-1</sup> = A<sup>T</sup>", value: "a" }, { text: "The columns of A form an orthonormal set.", value: "b" }, { text: "The determinant of A is either 1 or -1.", value: "c" }, { text: "A is always a symmetric matrix.", value: "d" }], answer: ["a", "b", "c"], explanation: "<b>(a) True:</b> The definition of an orthogonal matrix is A<sup>T</sup>A = I, which directly implies A<sup>-1</sup> = A<sup>T</sup>.<br><b>(b) True:</b> The condition A<sup>T</sup>A = I means that the dot product of any column with itself is 1 (normalized) and with any other column is 0 (orthogonal). This is the definition of an orthonormal set.<br><b>(c) True:</b> From A<sup>T</sup>A = I, we have det(A<sup>T</sup>A) = det(I) → det(A<sup>T</sup>)det(A) = 1 → (det(A))<sup>2</sup> = 1. Therefore, det(A) = ±1.<br><b>(d) False:</b> A rotation matrix is orthogonal but generally not symmetric." },
+                { id: 'q10', type: 'mcq', isPYQ: true, question: "The set S = {(x,y,z) ∈ R<sup>3</sup> | x - 2y + z = 5} is an affine subspace. What is its corresponding vector subspace?", options: [{ text: "U = {(x,y,z) | x - 2y + z = 5}", value: "a" }, { text: "U = {(x,y,z) | x - 2y + z = 0}", value: "b" }, { text: "U = span{(1,-2,1)}", value: "c" }, { text: "U = span{(5,0,0)}", value: "d" }], answer: "b", explanation: "An affine subspace L = v + U is a translation of a vector subspace U. A vector subspace must contain the origin. The equation for the corresponding subspace U is found by setting the constant term to zero, ensuring (0,0,0) is a solution. So, x - 2y + z = 0 defines the vector subspace." },
+                { id: 'q11', type: 'sa', isPYQ: true, question: "The columns of the matrix A = (1/3)<div class='matrix-container'><span class='matrix-brackets'>(</span><table class='matrix'><tr><td>1</td><td>-2</td><td>2</td></tr><tr><td>2</td><td>-1</td><td>-2</td></tr><tr><td>2</td><td>b</td><td>c</td></tr></table><span class='matrix-brackets'>)</span></div> are orthonormal. Find the value of b.", answer: "2", format: "Enter an integer.", explanation: "<b>Step 1: Use the orthogonality condition.</b><br>The dot product of any two distinct columns must be zero. Let's use the first two columns, c<sub>1</sub> and c<sub>2</sub>.<br>c<sub>1</sub> · c<sub>2</sub> = 0<br>(1)(-2) + (2)(-1) + (2)(b) = 0<br><b>Step 2: Solve for b.</b><br>-2 - 2 + 2b = 0<br>-4 + 2b = 0<br>2b = 4<br>b = 2." },
+                { id: 'q12', type: 'mcq', isPYQ: false, question: "Let A be a 3 × 5 matrix. What is the maximum possible rank of A and the minimum possible nullity of A?", options: [{ text: "Rank=3, Nullity=2", value: "c" }, { text: "Rank=5, Nullity=0", value: "a" }, { text: "Rank=3, Nullity=0", value: "b" }, { text: "Rank=5, Nullity=2", value: "d" }], answer: "c", explanation: "<b>Step 1: Determine the maximum rank.</b><br>For an m × n matrix, Rank(A) ≤ min(m, n). Here, A is 3 × 5, so Rank(A) ≤ min(3, 5) = 3. The maximum possible rank is 3.<br><b>Step 2: Apply the Rank-Nullity Theorem.</b><br>Rank(A) + Nullity(A) = n (number of columns). Here n=5.<br>Rank(A) + Nullity(A) = 5.<br><b>Step 3: Find the minimum nullity.</b><br>To minimize nullity, we must maximize the rank. Using the maximum rank of 3:<br>3 + Nullity(A) = 5 → Nullity(A) = 2. This is the minimum possible nullity." }
+            ],
+            // Add Set B and Set C here with 12 questions each
+            setB: [
+                // 12 new questions for Set B
+                { id: 'b1', type: 'mcq', isPYQ: false, question: 'If a 4x4 matrix A has det(A) = 3, what is the determinant of 2A?', options: [{ text: '6', value: 'a' }, { text: '12', value: 'b' }, { text: '24', value: 'c' }, { text: '48', value: 'd' }], answer: 'd', explanation: 'For an n x n matrix, det(kA) = k<sup>n</sup>det(A). Here n=4 and k=2, so det(2A) = 2<sup>4</sup>det(A) = 16 * 3 = 48.' },
+                { id: 'b2', type: 'sa', isPYQ: true, question: 'Let W be the subspace of R<sup>3</sup> spanned by {(1,0,-1), (0,1,1)}. What is the dimension of W<sup>⊥</sup>?', answer: '1', format: 'Enter an integer.', explanation: 'dim(W) + dim(W<sup>⊥</sup>) = dim(R<sup>3</sup>) = 3. The two spanning vectors are linearly independent, so dim(W) = 2. Thus, dim(W<sup>⊥</sup>) = 3 - 2 = 1.' },
+                { id: 'b3', type: 'mcq', isPYQ: false, question: 'Which of the following transformations is NOT linear?', options: [{ text: 'T(x,y) = (x+y, x-y)', value: 'a' }, { text: 'T(x,y) = (2x, 3y)', value: 'b' }, { text: 'T(x,y) = (x, y+1)', value: 'c' }, { text: 'T(x,y) = (y, x)', value: 'd' }], answer: 'c', explanation: 'A linear transformation must map the zero vector to the zero vector. T(0,0) = (0, 1), which is not the zero vector. Therefore, T is not linear.' },
+                { id: 'b4', type: 'msq', isPYQ: false, question: 'Let A be a 3x3 matrix with rank 2. Which of the following must be true?', options: [{ text: 'The columns of A are linearly dependent.', value: 'a' }, { text: 'The system Ax=0 has a unique solution.', value: 'b' }, { text: 'The determinant of A is zero.', value: 'c' }, { text: 'The nullity of A is 1.', value: 'd' }], answer: ['a', 'c', 'd'], explanation: 'If the rank is 2, which is less than the number of columns (3), the columns must be linearly dependent. A square matrix with less than full rank is not invertible, so its determinant is zero. By Rank-Nullity, Rank(A) + Nullity(A) = 3, so 2 + Nullity(A) = 3, which means Nullity(A) = 1. A non-zero nullity means Ax=0 has infinitely many solutions, not a unique one.' },
+                { id: 'b5', type: 'sa', isPYQ: false, question: 'What is the angle in degrees between the vectors u=(1,1,0) and v=(1,0,1) in R<sup>3</sup>?', answer: '60', format: 'Enter an integer.', explanation: 'cos(θ) = (u · v) / (||u|| ||v||). u · v = 1*1 + 1*0 + 0*1 = 1. ||u|| = sqrt(1<sup>2</sup>+1<sup>2</sup>+0<sup>2</sup>) = sqrt(2). ||v|| = sqrt(1<sup>2</sup>+0<sup>2</sup>+1<sup>2</sup>) = sqrt(2). So, cos(θ) = 1 / (sqrt(2)*sqrt(2)) = 1/2. The angle is arccos(1/2) = 60 degrees.' },
+                { id: 'b6', type: 'mcq', isPYQ: true, question: 'Let A be an invertible matrix. Which of the following is NOT necessarily true?', options: [{ text: 'A is a square matrix.', value: 'a' }, { text: 'det(A) ≠ 0', value: 'b' }, { text: 'The columns of A are linearly independent.', value: 'c' }, { text: 'A is a diagonal matrix.', value: 'd' }], answer: 'd', explanation: 'Invertible matrices must be square, have a non-zero determinant, and have linearly independent columns (full rank). However, an invertible matrix does not have to be diagonal. For example, <div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>1</td><td>1</td></tr><tr><td>0</td><td>1</td></tr></table><span class="matrix-brackets">]</span></div> is invertible but not diagonal.' },
+                { id: 'b7', type: 'mcq', isPYQ: false, question: 'Let T: V -> W be a linear transformation. If {v1, v2, v3} is a linearly dependent set in V, what can be said about {T(v1), T(v2), T(v3)}?', options: [{ text: 'It is always linearly independent.', value: 'a' }, { text: 'It is always linearly dependent.', value: 'b' }, { text: 'It can be either linearly independent or dependent.', value: 'c' }, { text: 'It forms a basis for W.', value: 'd' }], answer: 'b', explanation: 'If {v1, v2, v3} is linearly dependent, there exist scalars c1, c2, c3, not all zero, such that c1*v1 + c2*v2 + c3*v3 = 0. Applying T to both sides gives T(c1*v1 + c2*v2 + c3*v3) = T(0). By linearity, c1*T(v1) + c2*T(v2) + c3*T(v3) = 0. Since not all c_i are zero, the set of images is linearly dependent.' },
+                { id: 'b8', type: 'sa', isPYQ: false, question: 'Find the value of x such that the vectors (x, 2, -1) and (3, -5, 2) are orthogonal.', answer: '4', format: 'Enter an integer.', explanation: 'For the vectors to be orthogonal, their dot product must be zero. (x)(3) + (2)(-5) + (-1)(2) = 0. This gives 3x - 10 - 2 = 0, so 3x = 12, which means x=4.' },
+                { id: 'b9', type: 'mcq', isPYQ: true, question: 'If A is a 3x3 matrix and A = -A<sup>T</sup> (skew-symmetric), what is the determinant of A?', options: [{ text: '1', value: 'a' }, { text: '-1', value: 'b' }, { text: '0', value: 'c' }, { text: 'Cannot be determined', value: 'd' }], answer: 'c', explanation: 'We have det(A) = det(-A<sup>T</sup>). For an n x n matrix, det(kA) = k<sup>n</sup>det(A). Here n=3 and k=-1. So, det(-A<sup>T</sup>) = (-1)<sup>3</sup>det(A<sup>T</sup>) = -det(A<sup>T</sup>). We also know det(A<sup>T</sup>) = det(A). So, det(A) = -det(A), which means 2*det(A) = 0, so det(A) = 0.' },
+                { id: 'b10', type: 'msq', isPYQ: false, question: 'Which of the following sets of vectors forms a basis for R<sup>3</sup>?', options: [{ text: '{(1,1,0), (0,1,1), (1,0,-1)}', value: 'a' }, { text: '{(1,0,0), (0,1,0), (1,1,0)}', value: 'b' }, { text: '{(1,2,3), (4,5,6), (7,8,9)}', value: 'c' }, { text: '{(1,1,1), (1,-1,0), (0,0,1)}', value: 'd' }], answer: ['d'], explanation: 'A set of 3 vectors in R<sup>3</sup> forms a basis if they are linearly independent, which can be checked by seeing if the determinant of the matrix formed by them is non-zero. (a) det=0. (b) det=0. (c) det=0. (d) det = 1(-1) - 1(0) + 1(0) = -1. The determinant is non-zero, so the vectors are linearly independent and form a basis.' },
+                { id: 'b11', type: 'sa', isPYQ: false, question: 'If T: R<sup>5</sup> -> R<sup>3</sup> is a linear map with Nullity(T) = 3, what is Rank(T)?', answer: '2', format: 'Enter an integer.', explanation: 'By the Rank-Nullity Theorem, Rank(T) + Nullity(T) = dim(Domain). So, Rank(T) + 3 = 5, which means Rank(T) = 2.' },
+                { id: 'b12', type: 'mcq', isPYQ: false, question: 'Let A be a 2x2 matrix such that A<sup>2</sup> = 0. Which of the following must be true?', options: [{ text: 'A = 0', value: 'a' }, { text: 'det(A) = 0', value: 'b' }, { text: 'trace(A) = 0', value: 'c' }, { text: 'A is invertible', value: 'd' }], answer: 'b', explanation: 'If A<sup>2</sup> = 0, then det(A<sup>2</sup>) = det(0) = 0. Since det(A<sup>2</sup>) = (det(A))<sup>2</sup>, we have (det(A))<sup>2</sup> = 0, which implies det(A) = 0. A does not have to be the zero matrix, e.g., A = <div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>1</td></tr><tr><td>0</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>. The trace is the sum of eigenvalues. Since A<sup>2</sup>=0, the minimal polynomial divides x<sup>2</sup>, so the only eigenvalue is 0. Thus, trace(A) must also be 0. However, det(A)=0 is a more direct consequence.' },
+            ],
+            setC: [
+                { id: 'c1', type: 'mcq', isPYQ: true, question: 'Let T: R<sup>3</sup> -> R<sup>2</sup> be a linear transformation. Which of the following is impossible?', options: [{ text: 'T is surjective', value: 'a' }, { text: 'T is injective', value: 'b' }, { text: 'Nullity(T) = 2', value: 'c' }, { text: 'Rank(T) = 2', value: 'd' }], answer: 'b', explanation: 'By Rank-Nullity theorem, Rank(T) + Nullity(T) = 3. Since the codomain is R<sup>2</sup>, Rank(T) can be at most 2. This means Nullity(T) must be at least 1. If Nullity(T) > 0, T cannot be injective.' },
+                { id: 'c2', type: 'sa', isPYQ: false, question: 'If A and B are 3x3 matrices with det(A)=2 and det(B)=-5, what is det(A<sup>T</sup>B<sup>-1</sup>)?', answer: '-0.4', format: 'Enter a number (can be decimal).', explanation: 'det(A<sup>T</sup>B<sup>-1</sup>) = det(A<sup>T</sup>) * det(B<sup>-1</sup>) = det(A) * (1/det(B)) = 2 * (1/-5) = -0.4.' },
+                { id: 'c3', type: 'mcq', isPYQ: false, question: 'The set of solutions to Ax=b is an affine subspace. What can be said about the set of solutions to Ax=0?', options: [{ text: 'It is also an affine subspace.', value: 'a' }, { text: 'It is a vector subspace.', value: 'b' }, { text: 'It is an empty set.', value: 'c' }, { text: 'It is a single point.', value: 'd' }], answer: 'b', explanation: 'The solution set of a homogeneous system Ax=0 is always a vector subspace, known as the null space of A. It always contains the origin (the trivial solution).' },
+                { id: 'c4', type: 'msq', isPYQ: true, question: 'Let A be a 3x3 real matrix. Which of the following statements is/are equivalent to "A is invertible"?', options: [{ text: 'The columns of A form a basis for R<sup>3</sup>.', value: 'a' }, { text: 'The system Ax=0 has only the trivial solution.', value: 'b' }, { text: 'The rank of A is 3.', value: 'c' }, { text: 'The determinant of A is non-zero.', value: 'd' }], answer: ['a', 'b', 'c', 'd'], explanation: 'All these statements are part of the Invertible Matrix Theorem and are equivalent conditions for a square matrix to be invertible.' },
+                { id: 'c5', type: 'sa', isPYQ: false, question: 'Use the Gram-Schmidt process to find an orthogonal vector to v1 = (1,1,1) within the span of {(1,1,1), (1,2,3)}. The resulting vector is (x,y,z). What is x+y+z?', answer: '0', format: 'Enter an integer.', explanation: 'Let v1=(1,1,1) and v2=(1,2,3). The second orthogonal vector w2 = v2 - proj<sub>v1</sub>(v2). proj<sub>v1</sub>(v2) = ((v2·v1)/(v1·v1))v1 = ((1+2+3)/(1+1+1))(1,1,1) = (6/3)(1,1,1) = (2,2,2). So w2 = (1,2,3) - (2,2,2) = (-1, 0, 1). The sum of its components is -1+0+1=0.' },
+                { id: 'c6', type: 'mcq', isPYQ: false, question: 'Which matrix represents a projection onto the x-axis in R<sup>2</sup>?', options: [{ text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>1</td><td>0</td></tr><tr><td>0</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'a' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'b' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>1</td><td>0</td></tr><tr><td>0</td><td>1</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'c' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>1</td></tr><tr><td>1</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'd' }], answer: 'a', explanation: 'A projection onto the x-axis maps a vector (x,y) to (x,0). The linear transformation is T(x,y)=(x,0). T(1,0)=(1,0) and T(0,1)=(0,0). These form the columns of the matrix.' },
+                { id: 'c7', type: 'mcq', isPYQ: false, question: 'If a matrix A is equivalent to B, what is guaranteed to be true?', options: [{ text: 'They have the same rank.', value: 'a' }, { text: 'They have the same eigenvalues.', value: 'b' }, { text: 'They have the same determinant.', value: 'c' }, { text: 'They are similar.', value: 'd' }], answer: 'a', explanation: 'The definition of matrix equivalence is that B = QAP for invertible Q and P. This transformation preserves rank, but not necessarily eigenvalues or the determinant (unless the matrices are square and Q, P have det=1).' },
+                { id: 'c8', type: 'sa', isPYQ: true, question: 'Let A be a 5x5 matrix of rank 3. Let b be the third column of A. What is the dimension of the affine subspace W = {x ∈ R<sup>5</sup> : Ax=b}?', answer: '2', format: 'Enter an integer.', explanation: 'Since b is a column of A, the system Ax=b is consistent. The solution set is an affine subspace v + Ker(A), where v is a particular solution. The dimension of this affine subspace is the dimension of the kernel (null space). By Rank-Nullity, Rank(A) + Nullity(A) = 5. So, 3 + Nullity(A) = 5, which gives Nullity(A) = 2.' },
+                { id: 'c9', type: 'mcq', isPYQ: false, question: 'Which of these is NOT a vector space?', options: [{ text: 'The set of all 2x2 invertible matrices.', value: 'a' }, { text: 'The set of all polynomials of degree at most 3.', value: 'b' }, { text: 'The set of all functions f: R -> R such that f(0)=0.', value: 'c' }, { text: 'The set of all solutions to Ax=0.', value: 'd' }], answer: 'a', explanation: 'The set of invertible matrices is not closed under addition. For example, I and -I are invertible, but their sum, the zero matrix, is not.' },
+                { id: 'c10', type: 'msq', isPYQ: false, question: 'A linear transformation T: R<sup>3</sup> -> R<sup>3</sup> has Rank(T)=2. Which of the following could be true?', options: [{ text: 'T is an isomorphism.', value: 'a' }, { text: 'The kernel of T is a line through the origin.', value: 'b' }, { text: 'The image of T is a plane through the origin.', value: 'c' }, { text: 'T is invertible.', value: 'd' }], answer: ['b', 'c'], explanation: 'If Rank(T)=2, then by Rank-Nullity, Nullity(T) = 3 - 2 = 1. A 1D subspace is a line, and a 2D subspace (the image) is a plane. Since the nullity is not 0, T is not injective and thus not an isomorphism or invertible.' },
+                { id: 'c11', type: 'sa', isPYQ: false, question: 'If the vectors (1,1) and (-1, k) are linearly dependent, what is the value of k?', answer: '-1', format: 'Enter an integer.', explanation: 'Two vectors are linearly dependent if one is a scalar multiple of the other. (-1, k) = c * (1,1). From the first component, -1 = c*1, so c=-1. From the second component, k = c*1 = -1.' },
+                { id: 'c12', type: 'mcq', isPYQ: false, question: 'What is the standard matrix for a 90-degree counter-clockwise rotation in R<sup>2</sup>?', options: [{ text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>-1</td></tr><tr><td>1</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'a' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>1</td><td>0</td></tr><tr><td>0</td><td>-1</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'b' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>1</td></tr><tr><td>-1</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'c' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>-1</td><td>0</td></tr><tr><td>0</td><td>-1</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'd' }], answer: 'a', explanation: 'The rotation matrix is <div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>cos(θ)</td><td>-sin(θ)</td></tr><tr><td>sin(θ)</td><td>cos(θ)</td></tr></table><span class="matrix-brackets">]</span></div>. For θ=90°, cos(90°)=0 and sin(90°)=1. Plugging these in gives the matrix <div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>-1</td></tr><tr><td>1</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>.' },
+            ]
+        };
+        
+
+        const quizContainer = document.getElementById('quiz-container');
+        const submitBtn = document.getElementById('submit-btn');
+        const answeredCountEl = document.getElementById('questions-answered-count');
+        const masterTimerEl = document.getElementById('master-timer');
+
+        let userAnswers = {};
+        let questionTimers = {};
+        let questionDurations = {};
+        let quizStartTime;
+        let masterInterval;
+        let currentQuizSet;
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const secs = (seconds % 60).toString().padStart(2, '0');
+            return `${mins}:${secs}`;
+        }
+
+        function startQuiz() {
+            quizStartTime = new Date();
+            masterInterval = setInterval(() => {
+                const elapsedSeconds = Math.floor((new Date() - quizStartTime) / 1000);
+                masterTimerEl.textContent = formatTime(elapsedSeconds);
+            }, 1000);
+
+            currentQuizSet.forEach((q) => {
+                questionTimers[q.id] = { start: null, end: null };
+            });
+        }
+        
+        function handleInteraction(questionId) {
+             if (!questionTimers[questionId].start) {
+                questionTimers[questionId].start = new Date();
+            }
+        }
+        
+        function handleAnswerChange(questionId) {
+            if (questionTimers[questionId].start && !questionTimers[questionId].end) {
+                questionTimers[questionId].end = new Date();
+            }
+            const answeredIds = Object.keys(userAnswers);
+            answeredCountEl.textContent = `${answeredIds.length} / ${currentQuizSet.length}`;
+            if (answeredIds.length === currentQuizSet.length) {
+                submitBtn.disabled = false;
+            }
+        }
+
+        function renderQuiz() {
+            // Randomly select one quiz set
+            const sets = Object.keys(questionBank);
+            const randomSetKey = sets[Math.floor(Math.random() * sets.length)];
+            currentQuizSet = questionBank[randomSetKey];
+
+            currentQuizSet.forEach((q, index) => {
+                const questionIndex = index + 1;
+                const questionEl = document.createElement('div');
+                questionEl.id = `question-${q.id}`;
+                questionEl.className = 'bg-white p-6 rounded-lg shadow-md border border-gray-200';
+                
+                let optionsHtml = '';
+                if (q.type === 'mcq' || q.type === 'msq') {
+                    const inputType = q.type === 'mcq' ? 'radio' : 'checkbox';
+                    optionsHtml = q.options.map(opt => `
+                        <div>
+                            <label class="option-label flex items-center cursor-pointer p-2 rounded-md">
+                                <input type="${inputType}" name="${q.id}" value="${opt.value}" class="mr-3 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
+                                <span class="text-gray-700">${opt.text}</span>
+                            </label>
+                        </div>
+                    `).join('');
+                } else { // sa
+                    optionsHtml = `
+                        <input type="text" id="${q.id}-input" class="border border-gray-300 rounded-md p-2 w-full sm:w-1/2 focus:ring-red-500 focus:border-red-500" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 45">
+                        <p class="text-xs text-gray-500 mt-1">${q.format}</p>
+                    `;
+                }
+
+                const pyqHtml = q.isPYQ ? '<span class="pyq-tag">PYQ</span>' : '';
+
+                questionEl.innerHTML = `
+                    <p class="font-semibold mb-4 text-gray-800">${questionIndex}. ${q.question} ${pyqHtml}</p>
+                    <div class="space-y-3">${optionsHtml}</div>
+                `;
+                quizContainer.appendChild(questionEl);
+
+                questionEl.addEventListener('input', (e) => {
+                    handleInteraction(q.id);
+                    if (q.type === 'mcq') {
+                        userAnswers[q.id] = e.target.value;
+                    } else if (q.type === 'msq') {
+                        const checked = Array.from(questionEl.querySelectorAll(`input[name=${q.id}]:checked`)).map(el => el.value);
+                        if (checked.length > 0) userAnswers[q.id] = checked;
+                        else delete userAnswers[q.id];
+                    } else { // sa
+                        if(e.target.value) userAnswers[q.id] = e.target.value;
+                        else delete userAnswers[q.id];
+                    }
+                    handleAnswerChange(q.id);
+                });
+            });
+        }
+
+        function handleSubmit() {
+            clearInterval(masterInterval);
+
+            currentQuizSet.forEach(q => {
+                if (questionTimers[q.id].start) {
+                    const endTime = questionTimers[q.id].end || new Date();
+                    const duration = Math.round((endTime - questionTimers[q.id].start) / 1000);
+                    questionDurations[q.id] = duration > 0 ? duration : 1;
+                } else {
+                     questionDurations[q.id] = 0;
+                }
+            });
+
+            document.getElementById('quiz-form').classList.add('hidden');
+            submitBtn.parentElement.classList.add('hidden');
+            
+            renderReportCard();
+            renderSolutions();
+            window.scrollTo(0, 0);
+        }
+
+        function renderReportCard() {
+            let score = 0;
+            let reportHtml = `
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold text-center mb-4 text-red-700">Performance Report</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-6">
+                        <div id="score-display" class="p-4 bg-rose-100 rounded-lg"></div>
+                        <div id="accuracy-display" class="p-4 bg-rose-100 rounded-lg"></div>
+                        <div id="total-time-display" class="p-4 bg-rose-100 rounded-lg"></div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Question Breakdown:</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-200">
+                                <tr><th class="p-3">Q#</th><th class="p-3">Time Taken</th><th class="p-3">Your Answer</th><th class="p-3">Result</th></tr>
+                            </thead>
+                            <tbody>`;
+            
+            currentQuizSet.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                let isCorrect = false;
+                if (q.type === 'mcq' || q.type === 'sa') {
+                    isCorrect = userAnswer === q.answer;
+                } else if (q.type === 'msq') {
+                    isCorrect = userAnswer && JSON.stringify(userAnswer.sort()) === JSON.stringify([...q.answer].sort());
+                }
+
+                if (isCorrect) score += 10;
+                
+                reportHtml += `<tr class="border-b">
+                        <td class="p-3 font-semibold">${index + 1}</td>
+                        <td class="p-3">${formatTime(questionDurations[q.id] || 0)}</td>
+                        <td class="p-3 font-mono">${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer) : 'Unanswered'}</td>
+                        <td class="p-3 font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
+                    </tr>`;
+            });
+            
+            reportHtml += `</tbody></table></div></div>`;
+            const reportContainer = document.getElementById('report-card-container');
+            reportContainer.innerHTML = reportHtml;
+            reportContainer.classList.remove('hidden');
+
+            const accuracy = ((score / (currentQuizSet.length * 10)) * 100).toFixed(1);
+            document.getElementById('score-display').innerHTML = `<div class="text-lg font-semibold">Score</div><div class="text-3xl font-bold">${score} / 120</div>`;
+            document.getElementById('accuracy-display').innerHTML = `<div class="text-lg font-semibold">Accuracy</div><div class="text-3xl font-bold">${accuracy}%</div>`;
+            const totalSeconds = Math.floor((new Date() - quizStartTime) / 1000);
+            document.getElementById('total-time-display').innerHTML = `<div class="text-lg font-semibold">Total Time</div><div class="text-3xl font-bold">${formatTime(totalSeconds)}</div>`;
+        }
+
+        function renderSolutions() {
+            let solutionsHtml = '<h2 class="text-2xl font-bold text-center mb-4 text-red-700">Detailed Solutions</h2>';
+            currentQuizSet.forEach((q, index) => {
+                const userAnswer = userAnswers[q.id];
+                let isCorrect = false;
+                if (q.type === 'mcq' || q.type === 'sa') {
+                    isCorrect = userAnswer === q.answer;
+                } else if (q.type === 'msq') {
+                    isCorrect = userAnswer && JSON.stringify(userAnswer.sort()) === JSON.stringify([...q.answer].sort());
+                }
+                
+                const userAnswerDisplay = userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(', ').toUpperCase() : userAnswer) : 'Unanswered';
+                const correctAnswerDisplay = Array.isArray(q.answer) ? q.answer.join(', ').toUpperCase() : q.answer;
+
+                solutionsHtml += `<div class="solution-card">
+                        <p class="font-bold text-lg mb-2">Question ${index + 1}:</p>
+                        <p class="mb-4 text-gray-700">${q.question}</p>
+                        <p>Your Answer: <span class="font-semibold ${isCorrect ? 'solution-correct' : 'solution-incorrect'}">${userAnswerDisplay}</span></p>
+                        <p class="mb-3">Correct Answer: <span class="font-semibold solution-correct">${correctAnswerDisplay}</span></p>
+                        <hr class="my-3"><p class="font-semibold mb-2">Solution:</p>
+                        <div class="text-gray-600 text-sm space-y-2">${q.explanation}</div></div>`;
+            });
+            const solutionsContainer = document.getElementById('solutions-container');
+            solutionsContainer.innerHTML = solutionsHtml;
+            solutionsContainer.classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuiz();
+            startQuiz();
+            submitBtn.addEventListener('click', handleSubmit);
+        });
+    </script>
+</body>
+</html>
