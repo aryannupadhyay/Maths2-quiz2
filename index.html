@@ -3,351 +3,2305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Maths 2 Exam Simulator</title>
+    <title>Mathematics for Data Science II - Advanced Quiz</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #fef2f2; /* red-50 */
+            background-color: #e0f2fe; /* Light blue background */
+            color: #1a202c; /* Dark text */
+            padding-left: 1rem; /* Added horizontal padding */
+            padding-right: 1rem; /* Added horizontal padding */
         }
-        .matrix-container {
-            display: inline-flex;
-            align-items: center;
-            vertical-align: middle;
-            margin: 0 4px;
+        .container {
+            max-width: 1200px; /* Increased max-width for broader coverage */
+            margin: 2rem auto; /* Centered horizontally */
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid #bfdbfe; /* Blue-200 */
         }
-        .matrix-brackets {
-            font-size: 2.5em;
-            font-weight: 200;
-            color: #4b5563; /* gray-600 */
-        }
-        .matrix {
-            margin: 0 4px;
-            font-family: 'Lato', sans-serif;
+        .header {
             text-align: center;
+            margin-bottom: 2.5rem;
         }
-        .matrix td { padding: 2px 6px; }
-        .solution-correct { color: #16a34a; /* green-600 */ }
-        .solution-incorrect { color: #dc2626; /* red-600 */ }
-        .option-label:hover { background-color: #fee2e2; /* red-100 */ }
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #1e4ed8; /* Blue-700 */
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            font-size: 1.15rem;
+            color: #2b3a55; /* Darker blue-gray */
+        }
+        .question-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #93c5fd; /* Blue-300 */
+            transition: border-color 0.3s ease;
+        }
+        .question-card.answered {
+            border-color: #60a5fa; /* Blue-400 */
+        }
+        .question-card.correct {
+            border-color: #22c55e; /* Green-500 */
+            background-color: #f0fdf4; /* Green-50 */
+        }
+        .question-card.incorrect {
+            border-color: #ef4444; /* Red-500 */
+            background-color: #fef2f2; /* Red-50 */
+        }
+        .question-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a202c; /* Dark text */
+            margin-bottom: 1rem;
+        }
+        .option-label {
+            display: block;
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.6rem;
+            margin-bottom: 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            background-color: #f8fafc; /* Lightest blue-gray */
+            border: 1px solid #bfdbfe; /* Blue-200 */
+        }
+        .option-label:hover {
+            background-color: #e0f2fe; /* Blue-100 */
+            border-color: #93c5fd; /* Blue-300 */
+        }
         .option-label input:checked + span {
             font-weight: 600;
-            color: #b91c1c; /* red-700 */
+            color: #1d4ed8; /* Blue-800 */
         }
-        .solution-card {
-            background: #fff;
-            border-left: 4px solid #f87171; /* red-400 */
+        .option-label.selected {
+            background-color: #bfdbfe; /* Blue-200 */
+            border-color: #60a5fa; /* Blue-400 */
+        }
+        .option-label.correct-option {
+            background-color: #d1fae5; /* Green-100 */
+            border-color: #22c55e; /* Green-500 */
+        }
+        .option-label.incorrect-option {
+            background-color: #fee2e2; /* Red-100 */
+            border-color: #ef4444; /* Red-500 */
+        }
+        .sa-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #93c5fd; /* Blue-300 */
+            border-radius: 0.6rem;
+            font-size: 1rem;
+            color: #1a202c;
+            transition: border-color 0.2s ease;
+        }
+        .sa-input:focus {
+            outline: none;
+            border-color: #3b82f6; /* Blue-500 */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        .submit-btn {
+            background-color: #1d4ed8; /* Blue-700 */
+            color: white;
+            font-weight: bold;
+            padding: 0.9rem 2.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease-in-out;
+        }
+        .submit-btn:hover:not(:disabled) {
+            background-color: #2563eb; /* Blue-800 */
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .submit-btn:disabled {
+            background-color: #93c5fd; /* Blue-300 */
+            cursor: not-allowed;
+        }
+        .quiz-results, .detailed-solutions {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #eef2ff; /* Indigo-50 */
+            border-radius: 1rem;
+            border: 1px solid #c7d2fe; /* Indigo-200 */
+        }
+        .quiz-results h2, .detailed-solutions h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4338ca; /* Indigo-700 */
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .result-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .result-card {
+            background-color: #ffffff;
             padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #c7d2fe; /* Indigo-200 */
+            text-align: center;
+        }
+        .result-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #4338ca; /* Indigo-700 */
+            margin-bottom: 0.5rem;
+        }
+        .result-card p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a202c;
+        }
+        .feedback-summary {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            padding: 0.75rem 1rem;
             border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            text-align: center;
+        }
+        .feedback-summary.correct {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .feedback-summary.incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .explanation-box {
+            background-color: #e0f2fe; /* Blue-100 */
+            border-left: 4px solid #3b82f6; /* Blue-500 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            color: #1e40af; /* Blue-800 */
+            font-size: 0.95rem;
+        }
+        .solution-step {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background-color: #f8fafc; /* Lightest blue-gray */
+            border-radius: 0.5rem;
+            border: 1px dashed #e2e8f0; /* Gray-200 */
+        }
+        .solution-step strong {
+            color: #1d4ed8; /* Blue-700 */
+        }
+        .math-equation {
+            overflow-x: auto;
+            padding: 0.2rem 0;
+            line-height: 1.5;
+        }
+        .importance-tag {
+            background-color: #fef3c7; /* Yellow-200 */
+            color: #92400e; /* Yellow-800 */
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            display: inline-block;
+            border: 1px solid #fbbf24; /* Yellow-400 */
         }
         .pyq-tag {
+            background-color: #dcfce7; /* Green-100 */
+            color: #065f46; /* Green-800 */
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            margin-left: 0.5rem;
             display: inline-block;
-            background-color: #fecaca; /* red-200 */
-            color: #b91c1c; /* red-700 */
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 8px;
-            vertical-align: middle;
+            border: 1px solid #86efac; /* Green-300 */
         }
     </style>
+    <!-- MathJax for LaTeX rendering -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
-<body class="text-gray-800">
-
-    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-5xl">
-        <header class="text-center mb-4">
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Maths 2 Exam Simulator</h1>
-            <p class="text-md text-gray-600 mt-2">Answer all questions to unlock the submit button. Good luck!</p>
-        </header>
-
-        <!-- Quiz Info Bar -->
-        <div class="sticky top-0 z-10 bg-rose-100/80 backdrop-blur-sm p-4 rounded-lg shadow-md mb-8 flex justify-between items-center">
-            <div>
-                <span class="font-bold text-gray-700">Questions Answered:</span>
-                <span id="questions-answered-count" class="font-bold text-red-700">0 / 12</span>
-            </div>
-            <div>
-                <span class="font-bold text-gray-700">Time Elapsed:</span>
-                <span id="master-timer" class="font-bold text-red-700">00:00</span>
-            </div>
+<body class="bg-gray-100 p-4">
+    <div class="container">
+        <div class="header">
+            <h1>Mathematics for Data Science II - Advanced Quiz</h1>
+            <p>Test your understanding of Linear Algebra. Complete all questions, then submit for a detailed report.</p>
         </div>
 
-        <form id="quiz-form">
-            <div id="quiz-container" class="space-y-8">
-                <!-- Questions will be dynamically inserted here -->
-            </div>
+        <form id="quizForm" class="space-y-8">
+            <!-- Questions will be dynamically inserted here -->
         </form>
 
-        <!-- Submission Area -->
-        <div class="mt-10 text-center">
-            <button id="submit-btn" type="button" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 transition duration-300 shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Submit Quiz</button>
+        <div class="flex justify-center mt-10">
+            <button id="submitQuiz" class="submit-btn" disabled>
+                Submit Quiz
+            </button>
         </div>
 
-        <!-- Report Card Container -->
-        <div id="report-card-container" class="mt-12 hidden"></div>
-        
-        <!-- Solutions Container -->
-        <div id="solutions-container" class="mt-12 hidden space-y-6"></div>
+        <div id="quizResults" class="quiz-results hidden">
+            <h2>Quiz Report Card</h2>
+            <div class="result-card-grid">
+                <div class="result-card">
+                    <h3>Total Score</h3>
+                    <p id="scoreDisplay"></p>
+                </div>
+                <div class="result-card">
+                    <h3>Accuracy</h3>
+                    <p id="accuracyDisplay"></p>
+                </div>
+                <div class="result-card">
+                    <h3>Total Time</h3>
+                    <p id="timeDisplay"></p>
+                </div>
+            </div>
+            <div id="feedbackContainer" class="space-y-6">
+                <!-- Feedback for each question will be inserted here -->
+            </div>
+        </div>
+
+        <div id="detailedSolutions" class="detailed-solutions hidden">
+            <h2>Detailed Step-by-Step Solutions</h2>
+            <div id="solutionsContainer" class="space-y-8">
+                <!-- Detailed solutions will be inserted here -->
+            </div>
+        </div>
     </div>
 
     <script>
-        const questionBank = {
-            setA: [
-                { id: 'q1', type: 'mcq', isPYQ: true, question: "Let T:R<sup>2</sup> → R<sup>2</sup> be a linear transformation with T(2,1)=(-1,-3) and T(1,2)=(-5,0). What is the matrix representation of T w.r.t. the standard basis?", options: [{ text: "<div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>-3</td></tr><tr><td>-2</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div>", value: "a" }, { text: "<div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>-2</td></tr><tr><td>-3</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div>", value: "b" }, { text: "<div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>-1</td><td>-5</td></tr><tr><td>-3</td><td>0</td></tr></table><span class='matrix-brackets'>]</span></div>", value: "c" }, { text: "<div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>-2</td><td>1</td></tr><tr><td>1</td><td>-3</td></tr></table><span class='matrix-brackets'>]</span></div>", value: "d" }], answer: "a", explanation: "<b>Step 1: Express standard basis vectors as linear combinations.</b><br>We need to find T(1,0) and T(0,1). First, express (1,0) and (0,1) in terms of (2,1) and (1,2).<br>(1,0) = c<sub>1</sub>(2,1) + c<sub>2</sub>(1,2) → 2c<sub>1</sub>+c<sub>2</sub>=1, c<sub>1</sub>+2c<sub>2</sub>=0. Solving gives c<sub>1</sub>=2/3, c<sub>2</sub>=-1/3.<br>(0,1) = d<sub>1</sub>(2,1) + d<sub>2</sub>(1,2) → 2d<sub>1</sub>+d<sub>2</sub>=0, d<sub>1</sub>+2d<sub>2</sub>=1. Solving gives d<sub>1</sub>=-1/3, d<sub>2</sub>=2/3.<br><b>Step 2: Use linearity to find T(1,0) and T(0,1).</b><br>T(1,0) = (2/3)T(2,1) - (1/3)T(1,2) = (2/3)(-1,-3) - (1/3)(-5,0) = (-2/3 + 5/3, -2 - 0) = (1, -2).<br>T(0,1) = -(1/3)T(2,1) + (2/3)T(1,2) = -(1/3)(-1,-3) + (2/3)(-5,0) = (1/3 - 10/3, 1 + 0) = (-3, 1).<br><b>Step 3: Form the matrix.</b><br>The columns of the matrix are T(1,0) and T(0,1). So, A = <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>-3</td></tr><tr><td>-2</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div>." },
-                { id: 'q2', type: 'msq', isPYQ: true, question: "If A and B are n × n square matrices, which statement(s) is/are always true?", options: [{ text: "If A and B are similar, they have the same determinant.", value: "a" }, { text: "If A and B have the same rank, they are similar.", value: "b" }, { text: "If A and B are equivalent, they are similar.", value: "c" }, { text: "If A and B are similar, A<sup>T</sup> and B<sup>T</sup> are similar.", value: "d" }], answer: ["a", "d"], explanation: "<b>(a) True:</b> If B = P<sup>-1</sup>AP, then det(B) = det(P<sup>-1</sup>)det(A)det(P) = det(A).<br><b>(b) False:</b> Same rank implies equivalence, not similarity. E.g., I = <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>0</td></tr><tr><td>0</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div> and A = <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>1</td></tr><tr><td>0</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div> both have rank 2 but are not similar.<br><b>(c) False:</b> Equivalence is a weaker condition than similarity. All invertible matrices are equivalent, but not all are similar.<br><b>(d) True:</b> If B = P<sup>-1</sup>AP, then B<sup>T</sup> = (P<sup>-1</sup>AP)<sup>T</sup> = P<sup>T</sup>A<sup>T</sup>(P<sup>-1</sup>)<sup>T</sup>. Let Q = (P<sup>T</sup>)<sup>-1</sup>. Then Q<sup>-1</sup> = P<sup>T</sup>. So B<sup>T</sup> = Q<sup>-1</sup>A<sup>T</sup>Q. Thus A<sup>T</sup> and B<sup>T</sup> are similar." },
-                { id: 'q3', type: 'mcq', isPYQ: true, question: "Which of the following vector spaces is isomorphic to R<sup>2</sup>?", options: [{ text: "V<sub>1</sub> = {(x,y,z) ∈ R<sup>3</sup> | x+y+z=0}", value: "a" }, { text: "V<sub>2</sub> = span{(1,0,1), (0,1,1), (1,1,2)}", value: "b" }, { text: "The column space of the matrix <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>2</td></tr><tr><td>2</td><td>4</td></tr></table><span class='matrix-brackets'>]</span></div>", value: "c" }, { text: "The space of 2x2 symmetric matrices", value: "d" }], answer: "a", explanation: "Two vector spaces are isomorphic if they have the same dimension. <br><b>(a) V<sub>1</sub></b> is a plane through the origin in R<sup>3</sup>. A basis is {(-1,1,0), (-1,0,1)}. It has dimension 2, so it is isomorphic to R<sup>2</sup>.<br><b>(b) V<sub>2</sub></b> is also a 2D subspace since (1,1,2) = (1,0,1) + (0,1,1). So this is also isomorphic. <br><b>(c)</b> The column space is 1D. <br><b>(d)</b> The space of 2x2 symmetric matrices has dimension 3. A basis is {<div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>1</td><td>0</td></tr><tr><td>0</td><td>0</td></tr></table><span class='matrix-brackets'>]</span></div>, <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>0</td><td>1</td></tr><tr><td>1</td><td>0</td></tr></table><span class='matrix-brackets'>]</span></div>, <div class='matrix-container'><span class='matrix-brackets'>[</span><table class='matrix'><tr><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td></tr></table><span class='matrix-brackets'>]</span></div>}." },
-                { id: 'q4', type: 'sa', isPYQ: true, question: "For what value of k is the rank of the matrix A = <div class='matrix-container'><span class='matrix-brackets'>(</span><table class='matrix'><tr><td>1</td><td>-2</td><td>1</td></tr><tr><td>2</td><td>k</td><td>0</td></tr><tr><td>0</td><td>4</td><td>-2</td></tr></table><span class='matrix-brackets'>)</span></div> equal to 2?", answer: "0", format: "Enter an integer.", explanation: "<b>Step 1: Understand the condition.</b><br>For the rank of a 3x3 matrix to be less than 3, its determinant must be zero.<br><b>Step 2: Calculate the determinant.</b><br>det(A) = 1 * (k*(-2) - 0*4) - (-2) * (2*(-2) - 0*0) + 1 * (2*4 - k*0)<br>det(A) = -2k - (-2)(-4) + 8<br>det(A) = -2k - 8 + 8<br>det(A) = -2k<br><b>Step 3: Solve for k.</b><br>Set det(A) = 0 → -2k = 0 → k = 0." },
-                { id: 'q5', type: 'sa', isPYQ: true, question: "What is the nullity of the linear transformation T:R<sup>3</sup> → R<sup>3</sup> given by T(x,y,z) = (x-y, y-z, z-x)?", answer: "1", format: "Enter an integer.", explanation: "<b>Step 1: Find the kernel (null space) of T.</b><br>The kernel is the set of vectors (x,y,z) such that T(x,y,z) = (0,0,0).<br>This gives the system of equations:<br>x - y = 0  → x = y<br>y - z = 0  → y = z<br>z - x = 0  → z = x<br><b>Step 2: Describe the solution set.</b><br>The solution is x = y = z. Any vector in the kernel is of the form (t, t, t) for some scalar t.<br><b>Step 3: Find a basis for the kernel.</b><br>The kernel is spanned by the single vector (1,1,1).<br><b>Step 4: Determine the nullity.</b><br>The nullity is the dimension of the kernel. Since the basis has one vector, the nullity is 1." },
-                { id: 'q6', type: 'mcq', isPYQ: true, question: "Which of the following is a basis for the image of the transformation T from the previous question?", options: [{ text: "{(1,0,-1), (-1,1,0)}", value: "a" }, { text: "{(1,1,1)}", value: "c" }, { text: "{(1,0,0), (0,1,0)}", value: "d" }, { text: "{(1,0,-1), (0,1,-1), (-1,1,0)}", value: "b" }], answer: "a", explanation: "<b>Step 1: Use the Rank-Nullity Theorem.</b><br>dim(Domain) = Rank(T) + Nullity(T). We know dim(R<sup>3</sup>) = 3 and Nullity(T) = 1 from the previous question. So, 3 = Rank(T) + 1 → Rank(T) = 2. The basis for the image must have 2 vectors.<br><b>Step 2: Find the image of the standard basis vectors.</b><br>T(1,0,0) = (1, 0, -1)<br>T(0,1,0) = (-1, 1, 0)<br>T(0,0,1) = (0, -1, 1)<br><b>Step 3: Find a linearly independent spanning set.</b><br>The image is spanned by {(1,0,-1), (-1,1,0), (0,-1,1)}. Notice that (0,-1,1) = -(1,0,-1) - (-1,1,0). So, the third vector is dependent on the first two. A basis is formed by the first two linearly independent vectors: {(1,0,-1), (-1,1,0)}." },
-                { id: 'q7', type: 'sa', isPYQ: false, question: "What is the projection of vector v = (3, 5) onto the vector u = (1, 1)? Enter as (x,y) with no spaces.", answer: "(4,4)", format: "Enter in the format (x,y).", explanation: "<b>Step 1: Use the projection formula.</b><br>proj<sub>u</sub>(v) = ( (v · u) / (u · u) ) * u<br><b>Step 2: Calculate the dot products.</b><br>v · u = (3)(1) + (5)(1) = 8<br>u · u = (1)(1) + (1)(1) = 2<br><b>Step 3: Compute the projection.</b><br>proj<sub>u</sub>(v) = (8 / 2) * (1, 1) = 4 * (1, 1) = (4, 4)." },
-                { id: 'q8', type: 'sa', isPYQ: false, question: "Let W = span{(1, 1, 0, 0), (0, 1, 1, 0)} be a subspace of R<sup>4</sup>. What is the dimension of its orthogonal complement, W<sup>⊥</sup>?", answer: "2", format: "Enter an integer.", explanation: "<b>Step 1: Use the Orthogonal Complement Theorem.</b><br>For any subspace W of R<sup>n</sup>, we have dim(W) + dim(W<sup>⊥</sup>) = n.<br><b>Step 2: Find the dimension of W.</b><br>The spanning vectors (1, 1, 0, 0) and (0, 1, 1, 0) are not scalar multiples of each other, so they are linearly independent. Therefore, they form a basis for W, and dim(W) = 2.<br><b>Step 3: Calculate dim(W<sup>⊥</sup>).</b><br>Here n=4. So, 2 + dim(W<sup>⊥</sup>) = 4 → dim(W<sup>⊥</sup>) = 2." },
-                { id: 'q9', type: 'msq', isPYQ: true, question: "If A is an n × n orthogonal matrix, which of the following statements must be true?", options: [{ text: "A<sup>-1</sup> = A<sup>T</sup>", value: "a" }, { text: "The columns of A form an orthonormal set.", value: "b" }, { text: "The determinant of A is either 1 or -1.", value: "c" }, { text: "A is always a symmetric matrix.", value: "d" }], answer: ["a", "b", "c"], explanation: "<b>(a) True:</b> The definition of an orthogonal matrix is A<sup>T</sup>A = I, which directly implies A<sup>-1</sup> = A<sup>T</sup>.<br><b>(b) True:</b> The condition A<sup>T</sup>A = I means that the dot product of any column with itself is 1 (normalized) and with any other column is 0 (orthogonal). This is the definition of an orthonormal set.<br><b>(c) True:</b> From A<sup>T</sup>A = I, we have det(A<sup>T</sup>A) = det(I) → det(A<sup>T</sup>)det(A) = 1 → (det(A))<sup>2</sup> = 1. Therefore, det(A) = ±1.<br><b>(d) False:</b> A rotation matrix is orthogonal but generally not symmetric." },
-                { id: 'q10', type: 'mcq', isPYQ: true, question: "The set S = {(x,y,z) ∈ R<sup>3</sup> | x - 2y + z = 5} is an affine subspace. What is its corresponding vector subspace?", options: [{ text: "U = {(x,y,z) | x - 2y + z = 5}", value: "a" }, { text: "U = {(x,y,z) | x - 2y + z = 0}", value: "b" }, { text: "U = span{(1,-2,1)}", value: "c" }, { text: "U = span{(5,0,0)}", value: "d" }], answer: "b", explanation: "An affine subspace L = v + U is a translation of a vector subspace U. A vector subspace must contain the origin. The equation for the corresponding subspace U is found by setting the constant term to zero, ensuring (0,0,0) is a solution. So, x - 2y + z = 0 defines the vector subspace." },
-                { id: 'q11', type: 'sa', isPYQ: true, question: "The columns of the matrix A = (1/3)<div class='matrix-container'><span class='matrix-brackets'>(</span><table class='matrix'><tr><td>1</td><td>-2</td><td>2</td></tr><tr><td>2</td><td>-1</td><td>-2</td></tr><tr><td>2</td><td>b</td><td>c</td></tr></table><span class='matrix-brackets'>)</span></div> are orthonormal. Find the value of b.", answer: "2", format: "Enter an integer.", explanation: "<b>Step 1: Use the orthogonality condition.</b><br>The dot product of any two distinct columns must be zero. Let's use the first two columns, c<sub>1</sub> and c<sub>2</sub>.<br>c<sub>1</sub> · c<sub>2</sub> = 0<br>(1)(-2) + (2)(-1) + (2)(b) = 0<br><b>Step 2: Solve for b.</b><br>-2 - 2 + 2b = 0<br>-4 + 2b = 0<br>2b = 4<br>b = 2." },
-                { id: 'q12', type: 'mcq', isPYQ: false, question: "Let A be a 3 × 5 matrix. What is the maximum possible rank of A and the minimum possible nullity of A?", options: [{ text: "Rank=3, Nullity=2", value: "c" }, { text: "Rank=5, Nullity=0", value: "a" }, { text: "Rank=3, Nullity=0", value: "b" }, { text: "Rank=5, Nullity=2", value: "d" }], answer: "c", explanation: "<b>Step 1: Determine the maximum rank.</b><br>For an m × n matrix, Rank(A) ≤ min(m, n). Here, A is 3 × 5, so Rank(A) ≤ min(3, 5) = 3. The maximum possible rank is 3.<br><b>Step 2: Apply the Rank-Nullity Theorem.</b><br>Rank(A) + Nullity(A) = n (number of columns). Here n=5.<br>Rank(A) + Nullity(A) = 5.<br><b>Step 3: Find the minimum nullity.</b><br>To minimize nullity, we must maximize the rank. Using the maximum rank of 3:<br>3 + Nullity(A) = 5 → Nullity(A) = 2. This is the minimum possible nullity." }
-            ],
-            // Add Set B and Set C here with 12 questions each
-            setB: [
-                // 12 new questions for Set B
-                { id: 'b1', type: 'mcq', isPYQ: false, question: 'If a 4x4 matrix A has det(A) = 3, what is the determinant of 2A?', options: [{ text: '6', value: 'a' }, { text: '12', value: 'b' }, { text: '24', value: 'c' }, { text: '48', value: 'd' }], answer: 'd', explanation: 'For an n x n matrix, det(kA) = k<sup>n</sup>det(A). Here n=4 and k=2, so det(2A) = 2<sup>4</sup>det(A) = 16 * 3 = 48.' },
-                { id: 'b2', type: 'sa', isPYQ: true, question: 'Let W be the subspace of R<sup>3</sup> spanned by {(1,0,-1), (0,1,1)}. What is the dimension of W<sup>⊥</sup>?', answer: '1', format: 'Enter an integer.', explanation: 'dim(W) + dim(W<sup>⊥</sup>) = dim(R<sup>3</sup>) = 3. The two spanning vectors are linearly independent, so dim(W) = 2. Thus, dim(W<sup>⊥</sup>) = 3 - 2 = 1.' },
-                { id: 'b3', type: 'mcq', isPYQ: false, question: 'Which of the following transformations is NOT linear?', options: [{ text: 'T(x,y) = (x+y, x-y)', value: 'a' }, { text: 'T(x,y) = (2x, 3y)', value: 'b' }, { text: 'T(x,y) = (x, y+1)', value: 'c' }, { text: 'T(x,y) = (y, x)', value: 'd' }], answer: 'c', explanation: 'A linear transformation must map the zero vector to the zero vector. T(0,0) = (0, 1), which is not the zero vector. Therefore, T is not linear.' },
-                { id: 'b4', type: 'msq', isPYQ: false, question: 'Let A be a 3x3 matrix with rank 2. Which of the following must be true?', options: [{ text: 'The columns of A are linearly dependent.', value: 'a' }, { text: 'The system Ax=0 has a unique solution.', value: 'b' }, { text: 'The determinant of A is zero.', value: 'c' }, { text: 'The nullity of A is 1.', value: 'd' }], answer: ['a', 'c', 'd'], explanation: 'If the rank is 2, which is less than the number of columns (3), the columns must be linearly dependent. A square matrix with less than full rank is not invertible, so its determinant is zero. By Rank-Nullity, Rank(A) + Nullity(A) = 3, so 2 + Nullity(A) = 3, which means Nullity(A) = 1. A non-zero nullity means Ax=0 has infinitely many solutions, not a unique one.' },
-                { id: 'b5', type: 'sa', isPYQ: false, question: 'What is the angle in degrees between the vectors u=(1,1,0) and v=(1,0,1) in R<sup>3</sup>?', answer: '60', format: 'Enter an integer.', explanation: 'cos(θ) = (u · v) / (||u|| ||v||). u · v = 1*1 + 1*0 + 0*1 = 1. ||u|| = sqrt(1<sup>2</sup>+1<sup>2</sup>+0<sup>2</sup>) = sqrt(2). ||v|| = sqrt(1<sup>2</sup>+0<sup>2</sup>+1<sup>2</sup>) = sqrt(2). So, cos(θ) = 1 / (sqrt(2)*sqrt(2)) = 1/2. The angle is arccos(1/2) = 60 degrees.' },
-                { id: 'b6', type: 'mcq', isPYQ: true, question: 'Let A be an invertible matrix. Which of the following is NOT necessarily true?', options: [{ text: 'A is a square matrix.', value: 'a' }, { text: 'det(A) ≠ 0', value: 'b' }, { text: 'The columns of A are linearly independent.', value: 'c' }, { text: 'A is a diagonal matrix.', value: 'd' }], answer: 'd', explanation: 'Invertible matrices must be square, have a non-zero determinant, and have linearly independent columns (full rank). However, an invertible matrix does not have to be diagonal. For example, <div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>1</td><td>1</td></tr><tr><td>0</td><td>1</td></tr></table><span class="matrix-brackets">]</span></div> is invertible but not diagonal.' },
-                { id: 'b7', type: 'mcq', isPYQ: false, question: 'Let T: V -> W be a linear transformation. If {v1, v2, v3} is a linearly dependent set in V, what can be said about {T(v1), T(v2), T(v3)}?', options: [{ text: 'It is always linearly independent.', value: 'a' }, { text: 'It is always linearly dependent.', value: 'b' }, { text: 'It can be either linearly independent or dependent.', value: 'c' }, { text: 'It forms a basis for W.', value: 'd' }], answer: 'b', explanation: 'If {v1, v2, v3} is linearly dependent, there exist scalars c1, c2, c3, not all zero, such that c1*v1 + c2*v2 + c3*v3 = 0. Applying T to both sides gives T(c1*v1 + c2*v2 + c3*v3) = T(0). By linearity, c1*T(v1) + c2*T(v2) + c3*T(v3) = 0. Since not all c_i are zero, the set of images is linearly dependent.' },
-                { id: 'b8', type: 'sa', isPYQ: false, question: 'Find the value of x such that the vectors (x, 2, -1) and (3, -5, 2) are orthogonal.', answer: '4', format: 'Enter an integer.', explanation: 'For the vectors to be orthogonal, their dot product must be zero. (x)(3) + (2)(-5) + (-1)(2) = 0. This gives 3x - 10 - 2 = 0, so 3x = 12, which means x=4.' },
-                { id: 'b9', type: 'mcq', isPYQ: true, question: 'If A is a 3x3 matrix and A = -A<sup>T</sup> (skew-symmetric), what is the determinant of A?', options: [{ text: '1', value: 'a' }, { text: '-1', value: 'b' }, { text: '0', value: 'c' }, { text: 'Cannot be determined', value: 'd' }], answer: 'c', explanation: 'We have det(A) = det(-A<sup>T</sup>). For an n x n matrix, det(kA) = k<sup>n</sup>det(A). Here n=3 and k=-1. So, det(-A<sup>T</sup>) = (-1)<sup>3</sup>det(A<sup>T</sup>) = -det(A<sup>T</sup>). We also know det(A<sup>T</sup>) = det(A). So, det(A) = -det(A), which means 2*det(A) = 0, so det(A) = 0.' },
-                { id: 'b10', type: 'msq', isPYQ: false, question: 'Which of the following sets of vectors forms a basis for R<sup>3</sup>?', options: [{ text: '{(1,1,0), (0,1,1), (1,0,-1)}', value: 'a' }, { text: '{(1,0,0), (0,1,0), (1,1,0)}', value: 'b' }, { text: '{(1,2,3), (4,5,6), (7,8,9)}', value: 'c' }, { text: '{(1,1,1), (1,-1,0), (0,0,1)}', value: 'd' }], answer: ['d'], explanation: 'A set of 3 vectors in R<sup>3</sup> forms a basis if they are linearly independent, which can be checked by seeing if the determinant of the matrix formed by them is non-zero. (a) det=0. (b) det=0. (c) det=0. (d) det = 1(-1) - 1(0) + 1(0) = -1. The determinant is non-zero, so the vectors are linearly independent and form a basis.' },
-                { id: 'b11', type: 'sa', isPYQ: false, question: 'If T: R<sup>5</sup> -> R<sup>3</sup> is a linear map with Nullity(T) = 3, what is Rank(T)?', answer: '2', format: 'Enter an integer.', explanation: 'By the Rank-Nullity Theorem, Rank(T) + Nullity(T) = dim(Domain). So, Rank(T) + 3 = 5, which means Rank(T) = 2.' },
-                { id: 'b12', type: 'mcq', isPYQ: false, question: 'Let A be a 2x2 matrix such that A<sup>2</sup> = 0. Which of the following must be true?', options: [{ text: 'A = 0', value: 'a' }, { text: 'det(A) = 0', value: 'b' }, { text: 'trace(A) = 0', value: 'c' }, { text: 'A is invertible', value: 'd' }], answer: 'b', explanation: 'If A<sup>2</sup> = 0, then det(A<sup>2</sup>) = det(0) = 0. Since det(A<sup>2</sup>) = (det(A))<sup>2</sup>, we have (det(A))<sup>2</sup> = 0, which implies det(A) = 0. A does not have to be the zero matrix, e.g., A = <div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>1</td></tr><tr><td>0</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>. The trace is the sum of eigenvalues. Since A<sup>2</sup>=0, the minimal polynomial divides x<sup>2</sup>, so the only eigenvalue is 0. Thus, trace(A) must also be 0. However, det(A)=0 is a more direct consequence.' },
-            ],
-            setC: [
-                { id: 'c1', type: 'mcq', isPYQ: true, question: 'Let T: R<sup>3</sup> -> R<sup>2</sup> be a linear transformation. Which of the following is impossible?', options: [{ text: 'T is surjective', value: 'a' }, { text: 'T is injective', value: 'b' }, { text: 'Nullity(T) = 2', value: 'c' }, { text: 'Rank(T) = 2', value: 'd' }], answer: 'b', explanation: 'By Rank-Nullity theorem, Rank(T) + Nullity(T) = 3. Since the codomain is R<sup>2</sup>, Rank(T) can be at most 2. This means Nullity(T) must be at least 1. If Nullity(T) > 0, T cannot be injective.' },
-                { id: 'c2', type: 'sa', isPYQ: false, question: 'If A and B are 3x3 matrices with det(A)=2 and det(B)=-5, what is det(A<sup>T</sup>B<sup>-1</sup>)?', answer: '-0.4', format: 'Enter a number (can be decimal).', explanation: 'det(A<sup>T</sup>B<sup>-1</sup>) = det(A<sup>T</sup>) * det(B<sup>-1</sup>) = det(A) * (1/det(B)) = 2 * (1/-5) = -0.4.' },
-                { id: 'c3', type: 'mcq', isPYQ: false, question: 'The set of solutions to Ax=b is an affine subspace. What can be said about the set of solutions to Ax=0?', options: [{ text: 'It is also an affine subspace.', value: 'a' }, { text: 'It is a vector subspace.', value: 'b' }, { text: 'It is an empty set.', value: 'c' }, { text: 'It is a single point.', value: 'd' }], answer: 'b', explanation: 'The solution set of a homogeneous system Ax=0 is always a vector subspace, known as the null space of A. It always contains the origin (the trivial solution).' },
-                { id: 'c4', type: 'msq', isPYQ: true, question: 'Let A be a 3x3 real matrix. Which of the following statements is/are equivalent to "A is invertible"?', options: [{ text: 'The columns of A form a basis for R<sup>3</sup>.', value: 'a' }, { text: 'The system Ax=0 has only the trivial solution.', value: 'b' }, { text: 'The rank of A is 3.', value: 'c' }, { text: 'The determinant of A is non-zero.', value: 'd' }], answer: ['a', 'b', 'c', 'd'], explanation: 'All these statements are part of the Invertible Matrix Theorem and are equivalent conditions for a square matrix to be invertible.' },
-                { id: 'c5', type: 'sa', isPYQ: false, question: 'Use the Gram-Schmidt process to find an orthogonal vector to v1 = (1,1,1) within the span of {(1,1,1), (1,2,3)}. The resulting vector is (x,y,z). What is x+y+z?', answer: '0', format: 'Enter an integer.', explanation: 'Let v1=(1,1,1) and v2=(1,2,3). The second orthogonal vector w2 = v2 - proj<sub>v1</sub>(v2). proj<sub>v1</sub>(v2) = ((v2·v1)/(v1·v1))v1 = ((1+2+3)/(1+1+1))(1,1,1) = (6/3)(1,1,1) = (2,2,2). So w2 = (1,2,3) - (2,2,2) = (-1, 0, 1). The sum of its components is -1+0+1=0.' },
-                { id: 'c6', type: 'mcq', isPYQ: false, question: 'Which matrix represents a projection onto the x-axis in R<sup>2</sup>?', options: [{ text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>1</td><td>0</td></tr><tr><td>0</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'a' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'b' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>1</td><td>0</td></tr><tr><td>0</td><td>1</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'c' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>1</td></tr><tr><td>1</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'd' }], answer: 'a', explanation: 'A projection onto the x-axis maps a vector (x,y) to (x,0). The linear transformation is T(x,y)=(x,0). T(1,0)=(1,0) and T(0,1)=(0,0). These form the columns of the matrix.' },
-                { id: 'c7', type: 'mcq', isPYQ: false, question: 'If a matrix A is equivalent to B, what is guaranteed to be true?', options: [{ text: 'They have the same rank.', value: 'a' }, { text: 'They have the same eigenvalues.', value: 'b' }, { text: 'They have the same determinant.', value: 'c' }, { text: 'They are similar.', value: 'd' }], answer: 'a', explanation: 'The definition of matrix equivalence is that B = QAP for invertible Q and P. This transformation preserves rank, but not necessarily eigenvalues or the determinant (unless the matrices are square and Q, P have det=1).' },
-                { id: 'c8', type: 'sa', isPYQ: true, question: 'Let A be a 5x5 matrix of rank 3. Let b be the third column of A. What is the dimension of the affine subspace W = {x ∈ R<sup>5</sup> : Ax=b}?', answer: '2', format: 'Enter an integer.', explanation: 'Since b is a column of A, the system Ax=b is consistent. The solution set is an affine subspace v + Ker(A), where v is a particular solution. The dimension of this affine subspace is the dimension of the kernel (null space). By Rank-Nullity, Rank(A) + Nullity(A) = 5. So, 3 + Nullity(A) = 5, which gives Nullity(A) = 2.' },
-                { id: 'c9', type: 'mcq', isPYQ: false, question: 'Which of these is NOT a vector space?', options: [{ text: 'The set of all 2x2 invertible matrices.', value: 'a' }, { text: 'The set of all polynomials of degree at most 3.', value: 'b' }, { text: 'The set of all functions f: R -> R such that f(0)=0.', value: 'c' }, { text: 'The set of all solutions to Ax=0.', value: 'd' }], answer: 'a', explanation: 'The set of invertible matrices is not closed under addition. For example, I and -I are invertible, but their sum, the zero matrix, is not.' },
-                { id: 'c10', type: 'msq', isPYQ: false, question: 'A linear transformation T: R<sup>3</sup> -> R<sup>3</sup> has Rank(T)=2. Which of the following could be true?', options: [{ text: 'T is an isomorphism.', value: 'a' }, { text: 'The kernel of T is a line through the origin.', value: 'b' }, { text: 'The image of T is a plane through the origin.', value: 'c' }, { text: 'T is invertible.', value: 'd' }], answer: ['b', 'c'], explanation: 'If Rank(T)=2, then by Rank-Nullity, Nullity(T) = 3 - 2 = 1. A 1D subspace is a line, and a 2D subspace (the image) is a plane. Since the nullity is not 0, T is not injective and thus not an isomorphism or invertible.' },
-                { id: 'c11', type: 'sa', isPYQ: false, question: 'If the vectors (1,1) and (-1, k) are linearly dependent, what is the value of k?', answer: '-1', format: 'Enter an integer.', explanation: 'Two vectors are linearly dependent if one is a scalar multiple of the other. (-1, k) = c * (1,1). From the first component, -1 = c*1, so c=-1. From the second component, k = c*1 = -1.' },
-                { id: 'c12', type: 'mcq', isPYQ: false, question: 'What is the standard matrix for a 90-degree counter-clockwise rotation in R<sup>2</sup>?', options: [{ text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>-1</td></tr><tr><td>1</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'a' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>1</td><td>0</td></tr><tr><td>0</td><td>-1</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'b' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>1</td></tr><tr><td>-1</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'c' }, { text: '<div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>-1</td><td>0</td></tr><tr><td>0</td><td>-1</td></tr></table><span class="matrix-brackets">]</span></div>', value: 'd' }], answer: 'a', explanation: 'The rotation matrix is <div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>cos(θ)</td><td>-sin(θ)</td></tr><tr><td>sin(θ)</td><td>cos(θ)</td></tr></table><span class="matrix-brackets">]</span></div>. For θ=90°, cos(90°)=0 and sin(90°)=1. Plugging these in gives the matrix <div class="matrix-container"><span class="matrix-brackets">[</span><table class="matrix"><tr><td>0</td><td>-1</td></tr><tr><td>1</td><td>0</td></tr></table><span class="matrix-brackets">]</span></div>.' },
-            ]
-        };
-        
-
-        const quizContainer = document.getElementById('quiz-container');
-        const submitBtn = document.getElementById('submit-btn');
-        const answeredCountEl = document.getElementById('questions-answered-count');
-        const masterTimerEl = document.getElementById('master-timer');
-
-        let userAnswers = {};
-        let questionTimers = {};
-        let questionDurations = {};
-        let quizStartTime;
-        let masterInterval;
-        let currentQuizSet;
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-            const secs = (seconds % 60).toString().padStart(2, '0');
-            return `${mins}:${secs}`;
-        }
-
-        function startQuiz() {
-            quizStartTime = new Date();
-            masterInterval = setInterval(() => {
-                const elapsedSeconds = Math.floor((new Date() - quizStartTime) / 1000);
-                masterTimerEl.textContent = formatTime(elapsedSeconds);
-            }, 1000);
-
-            currentQuizSet.forEach((q) => {
-                questionTimers[q.id] = { start: null, end: null };
-            });
-        }
-        
-        function handleInteraction(questionId) {
-             if (!questionTimers[questionId].start) {
-                questionTimers[questionId].start = new Date();
-            }
-        }
-        
-        function handleAnswerChange(questionId) {
-            if (questionTimers[questionId].start && !questionTimers[questionId].end) {
-                questionTimers[questionId].end = new Date();
-            }
-            const answeredIds = Object.keys(userAnswers);
-            answeredCountEl.textContent = `${answeredIds.length} / ${currentQuizSet.length}`;
-            if (answeredIds.length === currentQuizSet.length) {
-                submitBtn.disabled = false;
-            }
-        }
-
-        function renderQuiz() {
-            // Randomly select one quiz set
-            const sets = Object.keys(questionBank);
-            const randomSetKey = sets[Math.floor(Math.random() * sets.length)];
-            currentQuizSet = questionBank[randomSetKey];
-
-            currentQuizSet.forEach((q, index) => {
-                const questionIndex = index + 1;
-                const questionEl = document.createElement('div');
-                questionEl.id = `question-${q.id}`;
-                questionEl.className = 'bg-white p-6 rounded-lg shadow-md border border-gray-200';
-                
-                let optionsHtml = '';
-                if (q.type === 'mcq' || q.type === 'msq') {
-                    const inputType = q.type === 'mcq' ? 'radio' : 'checkbox';
-                    optionsHtml = q.options.map(opt => `
-                        <div>
-                            <label class="option-label flex items-center cursor-pointer p-2 rounded-md">
-                                <input type="${inputType}" name="${q.id}" value="${opt.value}" class="mr-3 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
-                                <span class="text-gray-700">${opt.text}</span>
-                            </label>
-                        </div>
-                    `).join('');
-                } else { // sa
-                    optionsHtml = `
-                        <input type="text" id="${q.id}-input" class="border border-gray-300 rounded-md p-2 w-full sm:w-1/2 focus:ring-red-500 focus:border-red-500" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 || event.charCode == 45">
-                        <p class="text-xs text-gray-500 mt-1">${q.format}</p>
-                    `;
-                }
-
-                const pyqHtml = q.isPYQ ? '<span class="pyq-tag">PYQ</span>' : '';
-
-                questionEl.innerHTML = `
-                    <p class="font-semibold mb-4 text-gray-800">${questionIndex}. ${q.question} ${pyqHtml}</p>
-                    <div class="space-y-3">${optionsHtml}</div>
-                `;
-                quizContainer.appendChild(questionEl);
-
-                questionEl.addEventListener('input', (e) => {
-                    handleInteraction(q.id);
-                    if (q.type === 'mcq') {
-                        userAnswers[q.id] = e.target.value;
-                    } else if (q.type === 'msq') {
-                        const checked = Array.from(questionEl.querySelectorAll(`input[name=${q.id}]:checked`)).map(el => el.value);
-                        if (checked.length > 0) userAnswers[q.id] = checked;
-                        else delete userAnswers[q.id];
-                    } else { // sa
-                        if(e.target.value) userAnswers[q.id] = e.target.value;
-                        else delete userAnswers[q.id];
-                    }
-                    handleAnswerChange(q.id);
-                });
-            });
-        }
-
-        function handleSubmit() {
-            clearInterval(masterInterval);
-
-            currentQuizSet.forEach(q => {
-                if (questionTimers[q.id].start) {
-                    const endTime = questionTimers[q.id].end || new Date();
-                    const duration = Math.round((endTime - questionTimers[q.id].start) / 1000);
-                    questionDurations[q.id] = duration > 0 ? duration : 1;
-                } else {
-                     questionDurations[q.id] = 0;
-                }
-            });
-
-            document.getElementById('quiz-form').classList.add('hidden');
-            submitBtn.parentElement.classList.add('hidden');
-            
-            renderReportCard();
-            renderSolutions();
-            window.scrollTo(0, 0);
-        }
-
-        function renderReportCard() {
-            let score = 0;
-            let reportHtml = `
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-2xl font-bold text-center mb-4 text-red-700">Performance Report</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-6">
-                        <div id="score-display" class="p-4 bg-rose-100 rounded-lg"></div>
-                        <div id="accuracy-display" class="p-4 bg-rose-100 rounded-lg"></div>
-                        <div id="total-time-display" class="p-4 bg-rose-100 rounded-lg"></div>
+        // Pool of all available questions
+        const allQuestionsPool = [
+            {
+                id: 'q1',
+                type: 'mcq',
+                question: 'Let $A=\\begin{bmatrix}x&-4\\\\ 3&y\\end{bmatrix}$ and $T:\\mathbb{R}^{2}\\rightarrow\\mathbb{R}$ be a linear transformation given by $T(x,y)=trace(A).$ Recall that the trace of a matrix is the sum of its diagonal elements (the one going from top-left to bottom right). Which of the following statements is true?',
+                options: [
+                    'T is injective but not surjective.',
+                    'T is surjective but not injective.',
+                    'T is an isomorphism.',
+                    'T is neither injective nor surjective.'
+                ],
+                correctAnswer: 'T is surjective but not injective.',
+                explanation: 'The transformation $T(x,y) = x+y$.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the transformation.</strong>
+                        The trace of matrix $A=\\begin{bmatrix}x&-4\\\\ 3&y\\end{bmatrix}$ is $x+y$. So, the linear transformation is $T(x,y) = x+y$.
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Question Breakdown:</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-gray-200">
-                                <tr><th class="p-3">Q#</th><th class="p-3">Time Taken</th><th class="p-3">Your Answer</th><th class="p-3">Result</th></tr>
-                            </thead>
-                            <tbody>`;
-            
-            currentQuizSet.forEach((q, index) => {
-                const userAnswer = userAnswers[q.id];
-                let isCorrect = false;
-                if (q.type === 'mcq' || q.type === 'sa') {
-                    isCorrect = userAnswer === q.answer;
-                } else if (q.type === 'msq') {
-                    isCorrect = userAnswer && JSON.stringify(userAnswer.sort()) === JSON.stringify([...q.answer].sort());
-                }
+                    <div class="solution-step">
+                        <strong>Step 2: Check for injectivity (one-to-one).</strong>
+                        A transformation $T: V \\to W$ is injective if $T(v_1) = T(v_2) \\implies v_1 = v_2$.
+                        Consider $T(1,0) = 1+0 = 1$.
+                        Consider $T(0,1) = 0+1 = 1$.
+                        Since $T(1,0) = T(0,1)$ but $(1,0) \\ne (0,1)$, the transformation is not injective.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Check for surjectivity (onto).</strong>
+                        A transformation $T: V \\to W$ is surjective if for every $w \\in W$, there exists $v \\in V$ such that $T(v) = w$.
+                        Here, the codomain is $\\mathbb{R}$. For any real number $c \\in \\mathbb{R}$, we need to find $(x,y) \\in \\mathbb{R}^2$ such that $T(x,y) = c$.
+                        We can choose $x=c$ and $y=0$. Then $T(c,0) = c+0 = c$.
+                        Since for every $c$ in the codomain, we can find a pre-image, the transformation is surjective.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Conclude.</strong>
+                        Since T is surjective but not injective, the correct option is 'T is surjective but not injective.'.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests fundamental properties of linear transformations (injectivity and surjectivity) in a straightforward context. It assesses your understanding of mapping rules.',
+                isPYQ: false
+            },
+            {
+                id: 'q2',
+                type: 'msq',
+                question: 'Which of the following vector spaces is/are isomorphic to $\\mathbb{R}^{2}$? Note: Two vector spaces are said to be isomorphic if we can define an isomorphism from one to the other.',
+                options: [
+                    '$V_{1}=\\{(x,y,z)\\in\\mathbb{R}^{3}|x+y+z=0\\}$',
+                    '$V_{2}=span\\{(1,0,1),(1,1,0),(0,1,1)\\}$',
+                    '$V_{3}=\\left\\{[\\begin{smallmatrix}a&b\\\\ c&d\\end{smallmatrix}]|a+b=0,c+d=0;a,b,c,d\\in\\mathbb{R}\\right\\}$',
+                    '$V_{4}=\\left\\{x\\in\\mathbb{R}^{3}|Ax=0~where~A=\\begin{bmatrix}2&-1&1\\\\ -1&-7&1\\\\ 1&2&0\\end{bmatrix}\\right\\}$',
+                    '$V_{5}$ is the column space of the matrix $\\begin{bmatrix}5&-3\\\\ 2&1\\end{bmatrix}$'
+                ],
+                correctAnswer: [
+                    '$V_{1}=\\{(x,y,z)\\in\\mathbb{R}^{3}|x+y+z=0\\}$',
+                    '$V_{3}=\\left\\{[\\begin{smallmatrix}a&b\\\\ c&d\\end{smallmatrix}]|a+b=0,c+d=0;a,b,c,d\\in\\mathbb{R}\\right\\}$',
+                    '$V_{5}$ is the column space of the matrix $\\begin{bmatrix}5&-3\\\\ 2&1\\end{bmatrix}$'
+                ],
+                explanation: 'Two vector spaces are isomorphic if and only if they have the same dimension. We need to find spaces with dimension 2.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Recall the condition for isomorphism.</strong>
+                        Two vector spaces are isomorphic if and only if they have the same dimension. We need to identify which of the given vector spaces have a dimension of 2.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Analyze $V_1$.</strong>
+                        $V_{1}=\\{(x,y,z)\\in\\mathbb{R}^{3}|x+y+z=0\\}$. This is the set of all vectors in $\\mathbb{R}^3$ that lie on the plane $x+y+z=0$.
+                        We can write $z = -x-y$. So, any vector in $V_1$ is of the form $(x,y,-x-y)$.
+                        $(x,y,-x-y) = x(1,0,-1) + y(0,1,-1)$.
+                        The set $\{(1,0,-1), (0,1,-1)\}$ is linearly independent and spans $V_1$.
+                        Therefore, $\\text{dim}(V_1) = 2$. $V_1$ is isomorphic to $\\mathbb{R}^2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Analyze $V_2$.</strong>
+                        $V_{2}=span\\{(1,0,1),(1,1,0),(0,1,1)\\}$. To find the dimension of $V_2$, we find the rank of the matrix formed by these vectors as columns (or rows).
+                        Let $M = \\begin{bmatrix}1&1&0\\\\ 0&1&1\\\\ 1&0&1\\end{bmatrix}$.
+                        $\\text{det}(M) = 1(1 \\cdot 1 - 1 \\cdot 0) - 1(0 \\cdot 1 - 1 \\cdot 1) + 0(0 \\cdot 0 - 1 \\cdot 1) = 1(1) - 1(-1) + 0 = 1+1 = 2$.
+                        Since $\\text{det}(M) \\ne 0$, the three vectors are linearly independent and span $\\mathbb{R}^3$.
+                        Therefore, $\\text{dim}(V_2) = 3$. $V_2$ is not isomorphic to $\\mathbb{R}^2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Analyze $V_3$.</strong>
+                        $V_{3}=\\left\\{[\\begin{smallmatrix}a&b\\\\ c&d\\end{smallmatrix}]|a+b=0,c+d=0;a,b,c,d\\in\\mathbb{R}\\right\\}$.
+                        From the conditions, $b=-a$ and $d=-c$.
+                        So, any matrix in $V_3$ is of the form $\\begin{bmatrix}a&-a\\\\ c&-c\\end{bmatrix}$.
+                        We can write this as $a\\begin{bmatrix}1&-1\\\\ 0&0\\end{bmatrix} + c\\begin{bmatrix}0&0\\\\ 1&-1\\end{bmatrix}$.
+                        The set $\\left\\{\\begin{bmatrix}1&-1\\\\ 0&0\\end{bmatrix}, \\begin{bmatrix}0&0\\\\ 1&-1\\end{bmatrix}\\right\\}$ is linearly independent and spans $V_3$.
+                        Therefore, $\\text{dim}(V_3) = 2$. $V_3$ is isomorphic to $\\mathbb{R}^2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Analyze $V_4$.</strong>
+                        $V_{4}=\\left\\{x\\in\\mathbb{R}^{3}|Ax=0~where~A=\\begin{bmatrix}2&-1&1\\\\ -1&-7&1\\\\ 1&2&0\\end{bmatrix}\\right\\}$. This is the null space of matrix $A$.
+                        To find the dimension of the null space (nullity), we find the rank of $A$ and use the Rank-Nullity Theorem.
+                        Row reduce $A$:
+                        $\\begin{bmatrix}2&-1&1\\\\ -1&-7&1\\\\ 1&2&0\\end{bmatrix} \\xrightarrow{R_1 \\leftrightarrow R_3} \\begin{bmatrix}1&2&0\\\\ -1&-7&1\\\\ 2&-1&1\\end{bmatrix} \\xrightarrow{R_2+R_1, R_3-2R_1} \\begin{bmatrix}1&2&0\\\\ 0&-5&1\\\\ 0&-5&1\\end{bmatrix} \\xrightarrow{R_3-R_2} \\begin{bmatrix}1&2&0\\\\ 0&-5&1\\\\ 0&0&0\\end{bmatrix}$.
+                        The rank of $A$ is 2 (number of non-zero rows).
+                        By Rank-Nullity Theorem: $\\text{Rank}(A) + \\text{Nullity}(A) = \\text{number of columns}$.
+                        $2 + \\text{Nullity}(A) = 3$.
+                        Therefore, $\\text{Nullity}(A) = 1$. $\\text{dim}(V_4) = 1$. $V_4$ is not isomorphic to $\\mathbb{R}^2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 6: Analyze $V_5$.</strong>
+                        $V_{5}$ is the column space of the matrix $\\begin{bmatrix}5&-3\\\\ 2&1\\end{bmatrix}$.
+                        The column vectors are $(5,2)$ and $(-3,1)$. These two vectors are linearly independent (one is not a scalar multiple of the other).
+                        Since they are linearly independent and there are 2 of them in $\\mathbb{R}^2$, they form a basis for $\\mathbb{R}^2$.
+                        Therefore, $\\text{dim}(V_5) = 2$. $V_5$ is isomorphic to $\\mathbb{R}^2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 7: Conclude.</strong>
+                        The vector spaces isomorphic to $\\mathbb{R}^2$ are $V_1$, $V_3$, and $V_5$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This is a high-probability question that tests your understanding of isomorphism, which hinges on correctly determining the dimension of various types of vector spaces (subspaces defined by equations, span of vectors, matrix spaces, null space, column space).',
+                isPYQ: true
+            },
+            {
+                id: 'q3',
+                type: 'msq',
+                question: 'Select all true statement(s).',
+                options: [
+                    'For a matrix A of dimensions $m\\times n$, the rank of the matrix is equal to the minimum of $\\{m,n\\}$.',
+                    'The nullity of an invertible matrix is always zero.',
+                    'For a matrix A of dimensions $m\\times n$ the row space of A is the same as the column space of A.',
+                    'If A and B are square matrices of order n such that $rank(AB)=n$, then both A and B must be invertible.'
+                ],
+                correctAnswer: [
+                    'The nullity of an invertible matrix is always zero.',
+                    'If A and B are square matrices of order n such that $rank(AB)=n$, then both A and B must be invertible.'
+                ],
+                explanation: 'Review definitions of rank, nullity, row/column space, and matrix invertibility.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Analyze Option A.</strong>
+                        "For a matrix A of dimensions $m\\times n$, the rank of the matrix is at most the minimum of $\\{m,n\\}$."
+                        This statement is False. The rank of a matrix $A$ is at most $\\min\\{m,n\\}$. For example, the zero matrix of size $2 \\times 3$ has rank 0, but $\\min\\{2,3\\}=2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Analyze Option B.</strong>
+                        "The nullity of an invertible matrix is always zero."
+                        This statement is True. An invertible matrix $A$ (which must be square) has a non-zero determinant ($\\text{det}(A) \\ne 0$). This implies that the homogeneous system $Ax=0$ has only the trivial solution ($x=0$). The null space, which is the set of solutions to $Ax=0$, therefore contains only the zero vector, and its dimension (nullity) is 0.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Analyze Option C.</strong>
+                        "For a matrix A of dimensions $m\\times n$ the row space of A is the same as the column space of A."
+                        This statement is False. The row space of $A$ is a subspace of $\\mathbb{R}^n$ (where $n$ is the number of columns), and the column space of $A$ is a subspace of $\\mathbb{R}^m$ (where $m$ is the number of rows). These are generally different vector spaces unless $m=n$. Even if $m=n$, they are not necessarily the same space, only that their dimensions (which is the rank) are equal. For example, for $A=\\begin{bmatrix}1&0\\\\0&0\\end{bmatrix}$, row space is $\\text{span}\\{(1,0)\\}$ and column space is $\\text{span}\\{(1,0)\}\}$. For $A=\\begin{bmatrix}0&1\\\\0&0\\end{bmatrix}$, row space is $\\text{span}\\{(0,1)\\}$ and column space is $\\text{span}\\{(1,0)\}\}$. These are different spaces.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Analyze Option D.</strong>
+                        "If A and B are square matrices of order n such that $rank(AB)=n$, then both A and B must be invertible."
+                        This statement is True.
+                        If $\\text{rank}(AB)=n$, it means that the $n \\times n$ matrix $AB$ has full rank, which implies $AB$ is invertible.
+                        We know that $\\text{rank}(AB) \\le \\text{rank}(A)$ and $\\text{rank}(AB) \\le \\text{rank}(B)$.
+                        Since $\\text{rank}(AB)=n$, it must be that $\\text{rank}(A) \\ge n$ and $\\text{rank}(B) \\ge n$.
+                        For $n \\times n$ matrices, the maximum possible rank is $n$.
+                        Therefore, $\\text{rank}(A)=n$ and $\\text{rank}(B)=n$.
+                        A square matrix of order $n$ has rank $n$ if and only if it is invertible. So, both $A$ and $B$ must be invertible.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Conclude.</strong>
+                        The true statements are 'The nullity of an invertible matrix is always zero.' and 'If A and B are square matrices of order n such that $rank(AB)=n$, then both A and B must be invertible.'.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question covers fundamental definitions and theorems related to matrix properties, rank, and nullity. It\'s crucial for understanding the behavior of matrices in linear systems.',
+                isPYQ: true
+            },
+            {
+                id: 'q4',
+                type: 'mcq',
+                question: 'Let $T:\\mathbb{R}^{2}\\rightarrow\\mathbb{R}^{2}$ be a linear transformation such that $A=\\begin{bmatrix}3&1\\\\ 0&2\\end{bmatrix}$ is the matrix representation of T with respect to the ordered basis $\\beta_1=\\{(1,1),(1,-1)\\}$ for the domain and the standard ordered basis $\\beta_{st}=\\{(1,0), (0,1)\\}$ for the co-domain. Which of the following matrices represent the matrix representation of T with respect to the standard ordered basis $\\beta_{st}$ for both the domain and co-domain?',
+                options: [
+                    '$\\begin{bmatrix}2&-1\\\\ 1&-1\\end{bmatrix}$',
+                    '$\\begin{bmatrix}1&2\\\\ -1&1\\end{bmatrix}$',
+                    '$\\begin{bmatrix}2&1\\\\ 1&-1\\end{bmatrix}$',
+                    '$\\begin{bmatrix}2&1\\\\ -1&1\\end{bmatrix}$'
+                ],
+                correctAnswer: '$\\begin{bmatrix}2&1\\\\ 1&-1\\end{bmatrix}$',
+                explanation: 'This involves changing the basis for the domain from $\\beta_1$ to $\\beta_{st}$ while keeping the codomain as $\\beta_{st}$.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the given matrix representation.</strong>
+                        The matrix $A=\\begin{bmatrix}3&1\\\\ 0&2\\end{bmatrix}$ represents $T$ with respect to domain basis $\\beta_1=\\{(1,1),(1,-1)\\}$ and codomain basis $\\beta_{st}=\\{(1,0), (0,1)\\}$.
+                        This means:
+                        $T(1,1) = 3 \\cdot (1,0) + 0 \\cdot (0,1) = (3,0)$
+                        $T(1,-1) = 1 \\cdot (1,0) + 2 \\cdot (0,1) = (1,2)$
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Express the standard basis vectors of the domain in terms of $\\beta_1$.</strong>
+                        We need to find the matrix representation of $T$ with respect to $\\beta_{st}$ for both domain and codomain. This means we need to find $T(1,0)$ and $T(0,1)$.
+                        Let $(1,0) = a(1,1) + b(1,-1)$. This gives the system:
+                        $a+b = 1$
+                        $a-b = 0$
+                        Adding the equations: $2a=1 \\implies a=1/2$. Subtracting: $2b=1 \\implies b=1/2$.
+                        So, $(1,0) = \\frac{1}{2}(1,1) + \\frac{1}{2}(1,-1)$.
 
-                if (isCorrect) score += 10;
-                
-                reportHtml += `<tr class="border-b">
-                        <td class="p-3 font-semibold">${index + 1}</td>
-                        <td class="p-3">${formatTime(questionDurations[q.id] || 0)}</td>
-                        <td class="p-3 font-mono">${userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer) : 'Unanswered'}</td>
-                        <td class="p-3 font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}">${isCorrect ? 'Correct' : 'Incorrect'}</td>
-                    </tr>`;
-            });
-            
-            reportHtml += `</tbody></table></div></div>`;
-            const reportContainer = document.getElementById('report-card-container');
-            reportContainer.innerHTML = reportHtml;
-            reportContainer.classList.remove('hidden');
+                        Let $(0,1) = c(1,1) + d(1,-1)$. This gives the system:
+                        $c+d = 0$
+                        $c-d = 1$
+                        Adding the equations: $2c=1 \\implies c=1/2$. Subtracting: $2d=-1 \\implies d=-1/2$.
+                        So, $(0,1) = \\frac{1}{2}(1,1) - \\frac{1}{2}(1,-1)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Apply $T$ to the standard basis vectors using linearity.</strong>
+                        $T(1,0) = T\\left(\\frac{1}{2}(1,1) + \\frac{1}{2}(1,-1)\\right) = \\frac{1}{2}T(1,1) + \\frac{1}{2}T(1,-1)$
+                        $T(1,0) = \\frac{1}{2}(3,0) + \\frac{1}{2}(1,2) = \\left(\\frac{3}{2},0\\right) + \\left(\\frac{1}{2},1\\right) = \\left(\\frac{3+1}{2}, 0+1\\right) = (2,1)$.
 
-            const accuracy = ((score / (currentQuizSet.length * 10)) * 100).toFixed(1);
-            document.getElementById('score-display').innerHTML = `<div class="text-lg font-semibold">Score</div><div class="text-3xl font-bold">${score} / 120</div>`;
-            document.getElementById('accuracy-display').innerHTML = `<div class="text-lg font-semibold">Accuracy</div><div class="text-3xl font-bold">${accuracy}%</div>`;
-            const totalSeconds = Math.floor((new Date() - quizStartTime) / 1000);
-            document.getElementById('total-time-display').innerHTML = `<div class="text-lg font-semibold">Total Time</div><div class="text-3xl font-bold">${formatTime(totalSeconds)}</div>`;
+                        $T(0,1) = T\\left(\\frac{1}{2}(1,1) - \\frac{1}{2}(1,-1)\\right) = \\frac{1}{2}T(1,1) - \\frac{1}{2}T(1,-1)$
+                        $T(0,1) = \\frac{1}{2}(3,0) - \\frac{1}{2}(1,2) = \\left(\\frac{3}{2},0\\right) - \\left(\\frac{1}{2},1\\right) = \\left(\\frac{3-1}{2}, 0-1\\right) = (1,-1)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Form the new matrix representation.</strong>
+                        The matrix representation with respect to the standard basis for both domain and codomain will have $T(1,0)$ as its first column and $T(0,1)$ as its second column.
+                        New Matrix $M_{st} = \\begin{bmatrix}2&1\\\\ 1&-1\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Conclude.</strong>
+                        The correct option is $\\begin{bmatrix}2&1\\\\ 1&-1\\end{bmatrix}$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This is a classic and highly important problem type that tests your ability to change the basis of a linear transformation. It combines understanding of linear transformations, basis vectors, and matrix multiplication.',
+                isPYQ: true
+            },
+            {
+                id: 'q5',
+                type: 'mcq',
+                question: 'Based on the data from Question 4, what is the rank of T?',
+                options: ['0', '1', '2', '3'],
+                correctAnswer: '2',
+                explanation: 'The rank of a linear transformation is the rank of its matrix representation.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Identify the matrix representation of T.</strong>
+                        From Question 4, the matrix representation of $T$ with respect to the standard basis is $M_{st} = \\begin{bmatrix}2&1\\\\ 1&-1\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Calculate the rank of the matrix.</strong>
+                        The rank of a matrix is the number of linearly independent rows or columns. For a square matrix, if its determinant is non-zero, its rank is equal to its order.
+                        Calculate the determinant of $M_{st}$:
+                        $\\text{det}(M_{st}) = (2)(-1) - (1)(1) = -2 - 1 = -3$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Conclude the rank.</strong>
+                        Since $\\text{det}(M_{st}) = -3 \\ne 0$, the matrix $M_{st}$ has full rank, which is 2 (its order).
+                        Therefore, the rank of the linear transformation $T$ is 2.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question directly tests your understanding of the definition of rank in the context of linear transformations. It is fundamental for understanding the dimension of the image space.',
+                isPYQ: false
+            },
+            {
+                id: 'q6',
+                type: 'mcq',
+                question: 'Based on the data from Question 4, what is the nullity of T?',
+                options: ['0', '1', '2', '3'],
+                correctAnswer: '0',
+                explanation: 'Use the Rank-Nullity Theorem: Rank(T) + Nullity(T) = dim(domain).',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Recall the Rank-Nullity Theorem.</strong>
+                        For a linear transformation $T: V \\to W$, the Rank-Nullity Theorem states:
+                        $\\text{Rank}(T) + \\text{Nullity}(T) = \\text{dim}(V)$ (dimension of the domain).
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Identify known values.</strong>
+                        From Question 4, the domain of $T$ is $\\mathbb{R}^2$, so $\\text{dim}(V) = \\text{dim}(\\mathbb{R}^2) = 2$.
+                        From Question 5, we found that $\\text{Rank}(T) = 2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Apply the theorem to find nullity.</strong>
+                        $2 + \\text{Nullity}(T) = 2$
+                        $\\text{Nullity}(T) = 2 - 2 = 0$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Conclude.</strong>
+                        The nullity of $T$ is 0. This also implies that $T$ is an injective (one-to-one) transformation.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question is a direct application of the Rank-Nullity Theorem, a cornerstone of linear algebra. It links the rank of a transformation to the dimension of its kernel (null space).',
+                isPYQ: false
+            },
+            {
+                id: 'q7',
+                type: 'mcq',
+                question: 'If A and B are similar matrices, then $A^{T}$ and $B^{T}$ are similar matrices.',
+                options: ['TRUE', 'FALSE'],
+                correctAnswer: 'TRUE',
+                explanation: 'Similarity is preserved under transposition.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Recall the definition of similar matrices.</strong>
+                        Matrices $A$ and $B$ are similar if there exists an invertible matrix $P$ such that $B = P^{-1}AP$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Take the transpose of the similarity equation.</strong>
+                        If $B = P^{-1}AP$, then taking the transpose of both sides:
+                        $B^T = (P^{-1}AP)^T$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Apply the property of transpose of a product.</strong>
+                        The transpose of a product of matrices is the product of their transposes in reverse order: $(XYZ)^T = Z^T Y^T X^T$.
+                        So, $B^T = P^T A^T (P^{-1})^T$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Use the property $(P^{-1})^T = (P^T)^{-1}$.</strong>
+                        We know that the transpose of an inverse is the inverse of the transpose.
+                        So, $B^T = P^T A^T (P^T)^{-1}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Conclude similarity.</strong>
+                        Let $Q = P^T$. Since $P$ is an invertible matrix, its transpose $P^T$ is also invertible.
+                        Thus, we have $B^T = Q A^T Q^{-1}$.
+                        This equation fits the definition of similar matrices, where $A^T$ is similar to $B^T$ via the invertible matrix $Q$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 6: Final Answer.</strong>
+                        The statement is TRUE.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests a key property of similar matrices: whether similarity is preserved under common matrix operations like transposition. Such conceptual questions are common in exams.',
+                isPYQ: false
+            },
+            {
+                id: 'q8',
+                type: 'mcq',
+                question: 'If A and B have the same rank, then they are similar.',
+                options: ['TRUE', 'FALSE'],
+                correctAnswer: 'FALSE',
+                explanation: 'Having the same rank is a necessary but not sufficient condition for similarity.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the relationship between rank and similarity.</strong>
+                        If two matrices are similar, they must have the same rank (along with same determinant, trace, eigenvalues, etc.). However, the converse is not necessarily true.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Provide a counterexample.</strong>
+                        Consider the identity matrix $A = \\begin{bmatrix}1&0\\\\0&1\\end{bmatrix}$ and another matrix $B = \\begin{bmatrix}1&1\\\\0&1\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Check their ranks.</strong>
+                        $\\text{rank}(A) = 2$ (since $\\text{det}(A)=1 \\ne 0$).
+                        $\\text{rank}(B) = 2$ (since $\\text{det}(B)=1 \\ne 0$).
+                        So, $A$ and $B$ have the same rank.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Check for similarity.</strong>
+                        If $A$ and $B$ were similar, there would exist an invertible matrix $P$ such that $B = P^{-1}AP$.
+                        Substitute $A = \\begin{bmatrix}1&0\\\\0&1\\end{bmatrix} = I$ (the identity matrix):
+                        $B = P^{-1}IP$.
+                        Since the identity matrix commutes with any matrix ($IP = P$), we have:
+                        $B = P^{-1}P = I$.
+                        This implies $B$ must be the identity matrix. However, $B = \\begin{bmatrix}1&1\\\\0&1\\end{bmatrix} \\ne I$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Conclude.</strong>
+                        Since $A$ and $B$ have the same rank but are not similar, the statement "If A and B have the same rank, then they are similar" is FALSE.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This is a common conceptual trap. While similar matrices share many properties (like rank), the converse is not true. This question tests your precise understanding of similarity versus other matrix equivalences.',
+                isPYQ: true
+            },
+            {
+                id: 'q9',
+                type: 'sa',
+                question: 'Let $W = span\\{(1, 1, 0), (-1, 1, 0)\\}$. The projection of $(1, 2, 3)$ on W is $(a, b, c)$. Find the value of c. (Numerical answer, up to 2 decimal places)',
+                numerical: true,
+                numericalPrecision: 2,
+                correctAnswer: '0',
+                explanation: 'The projection of a vector onto a subspace results in a vector within that subspace. W is the xy-plane.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the subspace W.</strong>
+                        The subspace $W$ is spanned by $u_1 = (1,1,0)$ and $u_2 = (-1,1,0)$.
+                        Check if $u_1$ and $u_2$ are orthogonal: $u_1 \\cdot u_2 = (1)(-1) + (1)(1) + (0)(0) = -1+1+0 = 0$. Yes, they are orthogonal.
+                        Since $u_1$ and $u_2$ are linearly independent and have a zero in their z-component, they span the xy-plane in $\\mathbb{R}^3$. That is, $W = \\{(x,y,0) : x,y \\in \\mathbb{R}\\}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Find an orthonormal basis for W.</strong>
+                        Normalize $u_1$ and $u_2$:
+                        $e_1 = \\frac{u_1}{||u_1||} = \\frac{(1,1,0)}{\\sqrt{1^2+1^2+0^2}} = \\frac{(1,1,0)}{\\sqrt{2}} = \\left(\\frac{1}{\\sqrt{2}}, \\frac{1}{\\sqrt{2}}, 0\\right)$.
+                        $e_2 = \\frac{u_2}{||u_2||} = \\frac{(-1,1,0)}{\\sqrt{(-1)^2+1^2+0^2}} = \\frac{(-1,1,0)}{\\sqrt{2}} = \\left(-\\frac{1}{\\sqrt{2}}, \\frac{1}{\\sqrt{2}}, 0\\right)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Calculate the projection of $v=(1,2,3)$ onto W.</strong>
+                        The projection formula for an orthonormal basis is $\\text{proj}_W(v) = \\langle v, e_1 \\rangle e_1 + \\langle v, e_2 \\rangle e_2$.
+                        Calculate dot products:
+                        $\\langle v, e_1 \\rangle = (1)\\left(\\frac{1}{\\sqrt{2}}\\right) + (2)\\left(\\frac{1}{\\sqrt{2}}\\right) + (3)(0) = \\frac{1}{\\sqrt{2}} + \\frac{2}{\\sqrt{2}} = \\frac{3}{\\sqrt{2}}$.
+                        $\\langle v, e_2 \\rangle = (1)\\left(-\\frac{1}{\\sqrt{2}}\\right) + (2)\\left(\\frac{1}{\\sqrt{2}}\\right) + (3)(0) = -\\frac{1}{\\sqrt{2}} + \\frac{2}{\\sqrt{2}} = \\frac{1}{\\sqrt{2}}$.
+                        Now, substitute back into the projection formula:
+                        $\\text{proj}_W(v) = \\left(\\frac{3}{\\sqrt{2}}\\right) \\left(\\frac{1}{\\sqrt{2}}, \\frac{1}{\\sqrt{2}}, 0\\right) + \\left(\\frac{1}{\\sqrt{2}}\\right) \\left(-\\frac{1}{\\sqrt{2}}, \\frac{1}{\\sqrt{2}}, 0\\right)$
+                        $= \\left(-\\frac{3}{2}, \\frac{3}{2}, 0\\right) + \\left(-\\frac{1}{2}, \\frac{1}{2}, 0\\right)$
+                        $= \\left(\\frac{3-1}{2}, \\frac{3+1}{2}, 0\\right) = \\left(\\frac{2}{2}, \\frac{4}{2}, 0\\right) = (1, 2, 0)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Identify the value of c.</strong>
+                        The projection is $(a,b,c) = (1,2,0)$.
+                        Therefore, $c=0$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Final Answer.</strong>
+                        The value of c is 0.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This problem is crucial as it tests your ability to compute vector projections onto a subspace. This involves understanding orthogonal bases and applying the projection formula, which has applications in areas like data compression and regression.',
+                isPYQ: true
+            },
+            {
+                id: 'q10',
+                type: 'sa',
+                question: 'If the dimension of W is p and that of $W^{\\perp}$ is q, find the value of $p^{2}+q^{2}$. (from Q9 data) (Numerical answer, up to 0 decimal places)',
+                numerical: true,
+                numericalPrecision: 0,
+                correctAnswer: '5',
+                explanation: 'Use the dimension theorem for orthogonal complements.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Determine the dimension of W (p).</strong>
+                        From Question 9, $W = span\\{(1, 1, 0), (-1, 1, 0)\\}$.
+                        The vectors $(1,1,0)$ and $(-1,1,0)$ are linearly independent (one is not a scalar multiple of the other).
+                        Since they form a basis for $W$, the dimension of $W$ is $p=2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Determine the dimension of $W^{\\perp}$ (q).</strong>
+                        The subspace $W$ is a subspace of $\\mathbb{R}^3$.
+                        The dimension theorem for orthogonal complements states that for a subspace $W$ of a finite-dimensional inner product space $V$:
+                        $\\text{dim}(V) = \\text{dim}(W) + \\text{dim}(W^{\\perp})$.
+                        Here, $V = \\mathbb{R}^3$, so $\\text{dim}(V) = 3$.
+                        Substituting the known values:
+                        $3 = p + q$
+                        $3 = 2 + q$
+                        $q = 3 - 2 = 1$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Calculate $p^2+q^2$.</strong>
+                        Now, substitute the values of $p$ and $q$:
+                        $p^2 + q^2 = 2^2 + 1^2 = 4 + 1 = 5$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Final Answer.</strong>
+                        The value of $p^2+q^2$ is 5.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question reinforces the concept of orthogonal complements and the fundamental dimension theorem. It helps you understand how subspaces divide the larger vector space.',
+                isPYQ: false
+            },
+            {
+                id: 'q11',
+                type: 'sa',
+                question: 'The columns of the matrix A defined below are orthonormal: $A=\\frac{1}{a}\\begin{bmatrix}1&-2&2\\\\ 2&-1&-2\\\\ 2&b&c\\end{bmatrix}$. Find the value of a. (Numerical answer, up to 0 decimal places)',
+                numerical: true,
+                numericalPrecision: 0,
+                correctAnswer: '3',
+                explanation: 'For orthonormal columns, each column vector must have a norm of 1.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the property of orthonormal columns.</strong>
+                        If the columns of a matrix are orthonormal, it means that each column vector has a norm (length) of 1, and any two distinct column vectors are orthogonal (their dot product is 0).
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Use the norm property for the first column.</strong>
+                        Let the first column vector be $C_1 = \\frac{1}{a}\\begin{bmatrix}1\\\\ 2\\\\ 2\\end{bmatrix}$.
+                        For $C_1$ to be orthonormal, its norm must be 1: $||C_1|| = 1$.
+                        $||C_1||^2 = 1^2$
+                        $\\left\\|\\frac{1}{a}\\begin{bmatrix}1\\\\ 2\\\\ 2\\end{bmatrix}\\right\\|^2 = 1$
+                        $\\frac{1}{a^2} (1^2 + 2^2 + 2^2) = 1$
+                        $\\frac{1}{a^2} (1 + 4 + 4) = 1$
+                        $\\frac{9}{a^2} = 1$
+                        $a^2 = 9$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Determine the value of a.</strong>
+                        Since $a^2 = 9$, $a = \\pm 3$. In the context of scaling factors for orthonormal matrices, $a$ is typically taken as a positive scalar.
+                        Therefore, $a=3$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Final Answer.</strong>
+                        The value of a is 3.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question directly tests the definition of an orthonormal matrix, specifically that its columns (and rows) must have a norm of 1. It\'s a basic but essential calculation for understanding orthogonal transformations.',
+                isPYQ: true
+            },
+            {
+                id: 'q12',
+                type: 'sa',
+                question: 'From the data in Question 11, find the value of c. (Numerical answer, up to 0 decimal places)',
+                numerical: true,
+                numericalPrecision: 0,
+                correctAnswer: '1',
+                explanation: 'Use the orthogonality property between column vectors.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Use the value of 'a' from Question 11.</strong>
+                        From Question 11, we found $a=3$. So the matrix is $A=\\frac{1}{3}\\begin{bmatrix}1&-2&2\\\\ 2&-1&-2\\\\ 2&b&c\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Identify the column vectors.</strong>
+                        $C_1 = \\frac{1}{3}\\begin{bmatrix}1\\\\ 2\\\\ 2\\end{bmatrix}$, $C_2 = \\frac{1}{3}\\begin{bmatrix}-2\\\\ -1\\\\ b\\end{bmatrix}$, $C_3 = \\frac{1}{3}\\begin{bmatrix}2\\\\ -2\\\\ c\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Apply the orthogonality property $C_1 \\cdot C_2 = 0$.</strong>
+                        For the columns to be orthonormal, any two distinct columns must be orthogonal (their dot product must be 0).
+                        $C_1 \\cdot C_2 = 0$
+                        $\\left(\\frac{1}{3}\\begin{bmatrix}1\\\\ 2\\\\ 2\\end{bmatrix}\\right) \\cdot \\left(\\frac{1}{3}\\begin{bmatrix}-2\\\\ -1\\\\ b\\end{bmatrix}\\right) = 0$
+                        $\\frac{1}{9} ((1)(-2) + (2)(-1) + (2)(b)) = 0$
+                        $-2 - 2 + 2b = 0$
+                        $-4 + 2b = 0$
+                        $2b = 4 \\implies b = 2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Apply the orthogonality property $C_1 \\cdot C_3 = 0$.</strong>
+                        $C_1 \\cdot C_3 = 0$
+                        $\\left(\\frac{1}{3}\\begin{bmatrix}1\\\\ 2\\\\ 2\\end{bmatrix}\\right) \\cdot \\left(\\frac{1}{3}\\begin{bmatrix}2\\\\ -2\\\\ c\\end{bmatrix}\\right) = 0$
+                        $\\frac{1}{9} ((1)(2) + (2)(-2) + (2)(c)) = 0$
+                        $2 - 4 + 2c = 0$
+                        $-2 + 2c = 0$
+                        $2c = 2 \\implies c = 1$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: (Optional) Verify remaining orthonormal conditions.</strong>
+                        Now we have $a=3, b=2, c=1$.
+                        $C_2 = \\frac{1}{3}\\begin{bmatrix}-2\\\\ -1\\\\ 2\\end{bmatrix}$, $C_3 = \\frac{1}{3}\\begin{bmatrix}2\\\\ -2\\\\ 1\\end{bmatrix}$.
+                        Check norms: $||C_2||^2 = \\frac{1}{9}((-2)^2+(-1)^2+2^2) = \\frac{1}{9}(4+1+4) = 1$. $||C_3||^2 = \\frac{1}{9}(2^2+(-2)^2+1^2) = \\frac{1}{9}(4+4+1) = 1$.
+                        Check orthogonality: $C_2 \\cdot C_3 = \\frac{1}{9}((-2)(2) + (-1)(-2) + (2)(1)) = \\frac{1}{9}(-4+2+2) = 0$.
+                        All conditions are satisfied.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 6: Final Answer.</strong>
+                        The value of c is 1.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This problem extends on the previous one, requiring you to use the orthogonality condition between different columns of an orthonormal matrix. It reinforces the multi-faceted definition of orthonormal sets.',
+                isPYQ: true
+            },
+            {
+                id: 'q13',
+                type: 'msq',
+                question: 'Let S be the set of all solutions to the system $Ax=b$, where A and b are given below: $A=\\begin{bmatrix}1&0&-1\\\\ 0&1&0\\\\ 0&0&0\\end{bmatrix}.$ $b=\\begin{bmatrix}1\\\\ 1\\\\ 0\\end{bmatrix}$. Select all true statements.',
+                options: [
+                    'S is a vector subspace of $\\mathbb{R}^{3}$',
+                    'S is an affine subspace of $\\mathbb{R}^{3}$',
+                    'S is a line in $\\mathbb{R}^{3}$',
+                    'S is a plane in $\\mathbb{R}^{3}$'
+                ],
+                correctAnswer: [
+                    'S is an affine subspace of $\\mathbb{R}^{3}$',
+                    'S is a line in $\\mathbb{R}^{3}$'
+                ],
+                explanation: 'The solution set of a non-homogeneous system is an affine subspace. The nullity of A determines the dimension of the affine subspace, which is 1, representing a line.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Write down the system of linear equations.</strong>
+                        The matrix equation $Ax=b$ corresponds to the system:
+                        $1x_1 + 0x_2 - 1x_3 = 1 \\implies x_1 - x_3 = 1$
+                        $0x_1 + 1x_2 + 0x_3 = 1 \\implies x_2 = 1$
+                        $0x_1 + 0x_2 + 0x_3 = 0 \\implies 0 = 0$ (This equation is always true and does not impose additional constraints).
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Find the general solution for S.</strong>
+                        From $x_2 = 1$, we have a fixed value for $x_2$.
+                        From $x_1 - x_3 = 1$, we can express $x_1$ in terms of $x_3$: $x_1 = 1 + x_3$.
+                        Let $x_3 = t$, where $t$ is any real number (this is our free variable).
+                        Then the solution vector is $(x_1, x_2, x_3) = (1+t, 1, t)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Determine if S is a vector subspace.</strong>
+                        A vector subspace must contain the zero vector $(0,0,0)$.
+                        If $(0,0,0)$ were a solution, then $A(0,0,0)$ must equal $b=(1,1,0)$. But $A(0,0,0) = (0,0,0)$.
+                        Since $b \\ne (0,0,0)$, the system is non-homogeneous. The solution set of a non-homogeneous system is generally NOT a vector subspace. So, 'S is a vector subspace of $\\mathbb{R}^{3}$' is False.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Determine if S is an affine subspace.</strong>
+                        The solution set of a consistent system of linear equations (homogeneous or non-homogeneous) is always an affine subspace. Since we found solutions, the system is consistent.
+                        The solution set can be written as $(1,1,0) + t(1,0,1)$, which is of the form $v_p + U$, where $v_p=(1,1,0)$ is a particular solution and $U=span\\{(1,0,1)\\}$ is the null space of $A$. This is the definition of an affine subspace. So, 'S is an affine subspace of $\\mathbb{R}^{3}$' is True.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Determine the geometric representation of S.</strong>
+                        The solution set $(1,1,0) + t(1,0,1)$ represents a line in $\\mathbb{R}^3$ that passes through the point $(1,1,0)$ and is parallel to the direction vector $(1,0,1)$.
+                        So, 'S is a line in $\\mathbb{R}^{3}$' is True.
+                        'S is a plane in $\\mathbb{R}^{3}$' is False, as a plane would require two free parameters (dimension 2).
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 6: Final Answer.</strong>
+                        The true statements are 'S is an affine subspace of $\\mathbb{R}^{3}$' and 'S is a line in $\\mathbb{R}^{3}$'.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question integrates concepts of systems of linear equations, solution sets, vector subspaces, and affine subspaces. It\'s a comprehensive test of how these fundamental concepts relate to each other.',
+                isPYQ: true
+            },
+            {
+                id: 'q14',
+                type: 'msq',
+                question: 'From the data in Question 13, select all true statements.',
+                options: [
+                    'S is the empty set.',
+                    'S is a singleton set containing the zero vector.',
+                    '$S=(1,1,0)+span\\{(1,0,1)\\}$',
+                    '$S=(0,1,-1)+span\\{(1,0,1)\\}$'
+                ],
+                correctAnswer: [
+                    '$S=(1,1,0)+span\\{(1,0,1)\\}$',
+                    '$S=(0,1,-1)+span\\{(1,0,1)\\}$'
+                ],
+                explanation: 'The solution set is a line. An affine subspace can be represented by any of its points plus the corresponding vector subspace (null space).',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Recall the solution set from Question 13.</strong>
+                        The general solution set $S$ is given by $(1+t, 1, t)$ for $t \\in \\mathbb{R}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Evaluate Option A.</strong>
+                        "S is the empty set."
+                        This is False. As shown in Question 13, the system has infinitely many solutions (a line), so $S$ is not empty.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Evaluate Option B.</strong>
+                        "S is a singleton set containing the zero vector."
+                        This is False. $S$ contains infinitely many points (a line), not just one. Also, it does not contain the zero vector, as $(0,0,0)$ is not a solution (e.g., $0-0 \\ne 1$).
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Evaluate Option C.</strong>
+                        "$S=(1,1,0)+span\\{(1,0,1)\\}$"
+                        This is True.
+                        The general solution $(1+t, 1, t)$ can be written as $(1,1,0) + (t,0,t) = (1,1,0) + t(1,0,1)$.
+                        Here, $(1,1,0)$ is a particular solution (when $t=0$), and $span\\{(1,0,1)\\}$ is the null space of $A$ (as $A\\begin{bmatrix}1\\\\0\\\\1\\end{bmatrix} = \\begin{bmatrix}1-1\\\\0\\\\0\\end{bmatrix} = \\begin{bmatrix}0\\\\0\\\\0\\end{bmatrix}$). This is the standard form of an affine subspace.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Evaluate Option D.</strong>
+                        "$S=(0,1,-1)+span\\{(1,0,1)\\}$"
+                        This is True.
+                        An affine subspace $L = v_p + U$ can be represented using *any* vector $v_p$ that belongs to $L$. We need to check if $(0,1,-1)$ is a solution to the system:
+                        $x_1 - x_3 = 0 - (-1) = 1$. (Matches $b_1$)
+                        $x_2 = 1$. (Matches $b_2$)
+                        $0 = 0$. (Matches $b_3$)
+                        Since $(0,1,-1)$ is a solution (it corresponds to $t=-1$ in the general solution $(1+t,1,t)$), it can serve as a particular solution. The null space $span\\{(1,0,1)\\}$ remains the same.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 6: Final Answer.</strong>
+                        The true statements are '$S=(1,1,0)+span\\{(1,0,1)\\}$' and '$S=(0,1,-1)+span\\{(1,0,1)\\}$'.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests your ability to explicitly represent the solution set of a non-homogeneous linear system as an affine subspace. It emphasizes that any point on the affine subspace can serve as the "particular solution" component.',
+                isPYQ: false
+            },
+            {
+                id: 'q15',
+                type: 'mcq',
+                question: 'Which of the following is a basis for the kernel of $T:\\mathbb{R}^{3}\\rightarrow\\mathbb{R}^{3}$ given by $T(x,y,z)=(x-y,y-z,z-x)$?',
+                options: [
+                    '$\\left\\{(1,1,1)\\right\\}$',
+                    '$\\left\\{(1,0,0),(0,1,0)\\right\\}$',
+                    '$\\left\\{(1,0,-1),(-1,1,0)\\right\\}$',
+                    '$\\left\\{(1,1,0),(0,1,1)\\right\\}$'
+                ],
+                correctAnswer: '$\\left\\{(1,1,1)\\right\\}$',
+                explanation: 'The kernel consists of vectors $(x,y,z)$ such that $x-y=0, y-z=0, z-x=0$. This implies $x=y=z$.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Define the kernel of T.</strong>
+                        The kernel of $T$ (denoted as $\\text{ker}(T)$) is the set of all vectors $(x,y,z) \\in \\mathbb{R}^3$ such that $T(x,y,z) = (0,0,0)$.
+                        So, we set the components of $T(x,y,z)$ to zero:
+                        $x-y=0 \\quad \\implies x=y$
+                        $y-z=0 \\quad \\implies y=z$
+                        $z-x=0 \\quad \\implies z=x$
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Find the relationship between x, y, and z.</strong>
+                        From the equations, we have $x=y=z$.
+                        So, any vector in the kernel must be of the form $(x,x,x)$ for any real number $x$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Express the kernel as a span.</strong>
+                        We can write $(x,x,x) = x(1,1,1)$.
+                        Therefore, $\\text{ker}(T) = span\\{(1,1,1)\\}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Identify a basis for the kernel.</strong>
+                        A basis for $\\text{ker}(T)$ is a linearly independent set that spans $\\text{ker}(T)$. The single vector $\{(1,1,1)\}$ is linearly independent (since it's non-zero) and spans $\\text{ker}(T)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Final Answer.</strong>
+                        The correct option is $\\left\\{(1,1,1)\\right\\}$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'Finding the kernel (null space) of a linear transformation is a core skill. This question tests your ability to set up and solve a homogeneous system of equations to find the basis of the kernel.',
+                isPYQ: true
+            },
+            {
+                id: 'q16',
+                type: 'mcq',
+                question: 'What is the nullity of $T:\\mathbb{R}^{3}\\rightarrow\\mathbb{R}^{3}$ given by $T(x,y,z)=(x-y,y-z,z-x)$?',
+                options: ['0', '1', '2', '3'],
+                correctAnswer: '1',
+                explanation: 'The nullity is the dimension of the kernel. From Q15, the kernel is spanned by one vector.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Relate nullity to the kernel.</strong>
+                        The nullity of a linear transformation $T$ is defined as the dimension of its kernel ($\\\\text{Nullity}(T) = \\text{dim}(\\text{ker}(T))$).
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Use the result from Question 15.</strong>
+                        From Question 15, we found that the kernel of $T(x,y,z)=(x-y,y-z,z-x)$ is $span\\{(1,1,1)\\}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Determine the dimension of the kernel.</strong>
+                        The set $\{(1,1,1)\}$ is a basis for the kernel. Since there is one vector in the basis, the dimension of the kernel is 1.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Final Answer.</strong>
+                        Therefore, the nullity of $T$ is 1.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This is a direct follow-up to finding the kernel, assessing your understanding that nullity is simply the dimension of that kernel. It reinforces the connection between algebraic definitions and dimensional properties.',
+                isPYQ: false
+            },
+            {
+                id: 'q17',
+                type: 'mcq',
+                question: 'What is the rank of the projection map $P_W:\\mathbb{R}^{3}\\rightarrow W$ where $W=span\\{(1,0,-1),(3,1,2),(2,1,3)\\}$?',
+                options: ['0', '1', '2', '3'],
+                correctAnswer: '2',
+                explanation: 'The rank of a projection map onto a subspace W is equal to the dimension of W.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the rank of a projection map.</strong>
+                        The rank of a projection map $P_W: V \\to W$ is equal to the dimension of the subspace $W$ onto which it projects. So, we need to find $\\text{dim}(W)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Find the dimension of W.</strong>
+                        $W$ is spanned by the set $\\beta=\\{(1,0,-1),(3,1,2),(2,1,3)\\}$. To find the dimension of $W$, we need to find the number of linearly independent vectors in this set, which is the rank of the matrix formed by these vectors as columns (or rows).
+                        Let $M = \\begin{bmatrix}1&3&2\\\\ 0&1&1\\\\ -1&2&3\\end{bmatrix}$.
+                        Perform row operations to find the rank:
+                        $\\begin{bmatrix}1&3&2\\\\ 0&1&1\\\\ -1&2&3\\end{bmatrix} \\xrightarrow{R_3+R_1} \\begin{bmatrix}1&3&2\\\\ 0&1&1\\\\ 0&5&5\\end{bmatrix} \\xrightarrow{R_3-5R_2} \\begin{bmatrix}1&3&2\\\\ 0&1&1\\\\ 0&0&0\\end{bmatrix}$.
+                        The row echelon form has 2 non-zero rows.
+                        Therefore, $\\text{dim}(W) = 2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Conclude the rank of the projection map.</strong>
+                        Since $\\text{Rank}(P_W) = \\text{dim}(W)$,
+                        $\\text{Rank}(P_W) = 2$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests a key property of projection maps: their rank is equal to the dimension of the subspace they project onto. It also requires you to calculate the dimension of a subspace spanned by a given set of vectors.',
+                isPYQ: true
+            },
+            {
+                id: 'q18',
+                type: 'mcq',
+                question: 'What is the nullity of the projection map $P_W:\\mathbb{R}^{3}\\rightarrow W$ where $W=span\\{(1,0,-1),(3,1,2),(2,1,3)\\}$?',
+                options: ['0', '1', '2', '3'],
+                correctAnswer: '1',
+                explanation: 'Use the Rank-Nullity Theorem: Rank($P_W$) + Nullity($P_W$) = dim(domain).',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Recall the Rank-Nullity Theorem.</strong>
+                        For a linear transformation $T: V \\to W$, $\\text{Rank}(T) + \\text{Nullity}(T) = \\text{dim}(V)$.
+                        Here, $T = P_W$, the domain $V = \\mathbb{R}^3$, so $\\text{dim}(V) = 3$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Use the rank from Question 17.</strong>
+                        From Question 17, we found that $\\text{Rank}(P_W) = 2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Apply the Rank-Nullity Theorem.</strong>
+                        $2 + \\text{Nullity}(P_W) = 3$
+                        $\\text{Nullity}(P_W) = 3 - 2 = 1$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Final Answer.</strong>
+                        The nullity of $P_W$ is 1. This also implies that the kernel of $P_W$ (which is $W^{\\perp}$) has dimension 1.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question is a direct application of the Rank-Nullity Theorem in the context of projection maps. It reinforces the relationship between rank, nullity, and the dimensions of the domain and image space.',
+                isPYQ: false
+            },
+            {
+                id: 'q19',
+                type: 'sa',
+                question: 'Let A be a $5\\times5$ matrix of rank 3. Let b be the third column of A and W be the affine subspace of $\\mathbb{R}^{5}$ given by $W=\\{x\\in\\mathbb{R}^{5}:Ax=b\\}$. What is the dimension of W? (Numerical answer, up to 0 decimal places)',
+                numerical: true,
+                numericalPrecision: 0,
+                correctAnswer: '2',
+                explanation: 'The dimension of an affine subspace (solution set of $Ax=b$) is equal to the nullity of A.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the nature of the solution set W.</strong>
+                        The set $W=\\{x\\in\\mathbb{R}^{5}:Ax=b\\}$ is the solution set of a system of linear equations. Since $b$ is the third column of $A$, $x = (0,0,1,0,0)^T$ is a particular solution (i.e., $A \\cdot (0,0,1,0,0)^T = b$). Thus, the system $Ax=b$ is consistent.
+                        The solution set of a consistent system $Ax=b$ forms an affine subspace, whose dimension is equal to the nullity of the coefficient matrix $A$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Use the Rank-Nullity Theorem to find the nullity of A.</strong>
+                        The matrix $A$ has dimensions $m \\times n = 5 \\times 5$. So, the number of columns $n=5$.
+                        We are given that $\\text{rank}(A) = 3$.
+                        By the Rank-Nullity Theorem: $\\text{rank}(A) + \\text{nullity}(A) = n$.
+                        $3 + \\text{nullity}(A) = 5$.
+                        $\\text{nullity}(A) = 5 - 3 = 2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Determine the dimension of W.</strong>
+                        The dimension of the affine subspace $W$ is equal to $\\text{nullity}(A)$.
+                        Therefore, $\\text{dim}(W) = 2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Final Answer.</strong>
+                        The dimension of W is 2.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This is a crucial problem that connects affine subspaces with the Rank-Nullity Theorem. It tests your understanding that the dimension of the solution set of a consistent linear system is equal to the nullity of the coefficient matrix.',
+                isPYQ: true
+            },
+            {
+                id: 'q20',
+                type: 'mcq',
+                question: 'Let A and B be $n\\times n$ similar matrices. Suppose A has exactly $n-1$ linearly independent columns, then $det(B)$ is equal to:',
+                options: ['0', '1', '$n-1$', 'Cannot be determined'],
+                correctAnswer: '0',
+                explanation: 'If A has $n-1$ linearly independent columns, its rank is $n-1$. Since A and B are similar, they have the same rank. A square matrix with rank less than its order has a determinant of 0.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Relate linearly independent columns to rank.</strong>
+                        The number of linearly independent columns of a matrix is its column rank, which is equal to its rank.
+                        Given that A has exactly $n-1$ linearly independent columns, this means $\\text{rank}(A) = n-1$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Use the property of similar matrices.</strong>
+                        If two matrices A and B are similar, then they have the same rank.
+                        Therefore, $\\text{rank}(B) = \\text{rank}(A) = n-1$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Relate rank to determinant for square matrices.</strong>
+                        For an $n \\times n$ square matrix, its determinant is non-zero if and only if its rank is $n$ (full rank).
+                        If the rank of an $n \\times n$ matrix is less than $n$, then its determinant is 0.
+                        Since $\\text{rank}(B) = n-1$ and $n-1 < n$ (assuming $n>1$, which is typical for $n \\times n$ matrices in this context), the rank of B is less than its order.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Conclude the determinant of B.</strong>
+                        Therefore, $\\text{det}(B) = 0$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question combines the concepts of similar matrices, rank, and determinant. It\'s a good test of how these fundamental properties are interconnected, especially for square matrices.',
+                isPYQ: true
+            },
+            {
+                id: 'q21',
+                type: 'msq',
+                question: 'Let A be an $n\\times n$ orthogonal matrix. Which of the following statement(s) is/are true?',
+                options: [
+                    'The rows of A form an orthonormal basis for $\\mathbb{R}^{n}$.',
+                    'Suppose T is the linear transformation corresponding to A, then $||Tv||=||v||$ for any $v\\in\\mathbb{R}^{n}$.',
+                    'The system of linear equations $Ax=b$ has a unique solution for every $b\\in\\mathbb{R}^{n}$.',
+                    'The rows of A form an orthogonal basis but not an orthonormal basis for $\\mathbb{R}^{n}$.'
+                ],
+                correctAnswer: [
+                    'The rows of A form an orthonormal basis for $\\mathbb{R}^{n}$.',
+                    'Suppose T is the linear transformation corresponding to A, then $||Tv||=||v||$ for any $v\\in\\mathbb{R}^{n}$.',
+                    'The system of linear equations $Ax=b$ has a unique solution for every $b\\in\\mathbb{R}^{n}$.'
+                ],
+                explanation: 'Orthogonal matrices preserve norms and imply invertibility.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Recall the definition of an orthogonal matrix.</strong>
+                        An $n \\times n$ matrix $A$ is orthogonal if $A^T A = AA^T = I$, where $I$ is the identity matrix.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Analyze Option A.</strong>
+                        "The rows of A form an orthonormal basis for $\\mathbb{R}^{n}$."
+                        This is True. A property of orthogonal matrices is that their rows form an orthonormal set (and thus an orthonormal basis for $\\mathbb{R}^n$). Similarly, their columns also form an orthonormal basis.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Analyze Option B.</strong>
+                        "Suppose T is the linear transformation corresponding to A, then $||Tv||=||v||$ for any $v\\in\\mathbb{R}^{n}$."
+                        This is True. Orthogonal transformations (linear transformations represented by orthogonal matrices) are precisely those that preserve the norm (length) of vectors. This is because $||Tv||^2 = (Tv)^T (Tv) = v^T A^T A v = v^T I v = v^T v = ||v||^2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Analyze Option C.</strong>
+                        "The system of linear equations $Ax=b$ has a unique solution for every $b\\in\\mathbb{R}^{n}$."
+                        This is True. Since $A^T A = I$, $A$ is invertible (with $A^{-1} = A^T$). If a square matrix $A$ is invertible, then the system $Ax=b$ has a unique solution ($x=A^{-1}b$) for every $b$ in the codomain.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Analyze Option D.</strong>
+                        "The rows of A form an orthogonal basis but not an orthonormal basis for $\\mathbb{R}^{n}$."
+                        This is False. As stated in Option A, the rows of an orthogonal matrix form an *orthonormal* basis, meaning their norms are also 1. If they were only orthogonal, their norms could be anything other than 1.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 6: Final Answer.</strong>
+                        The true statements are 'The rows of A form an orthonormal basis for $\\mathbb{R}^{n}$.', 'Suppose T is the linear transformation corresponding to A, then $||Tv||=||v||$ for any $v\\in\\mathbb{R}^{n}$.', and 'The system of linear equations $Ax=b$ has a unique solution for every $b\\in\\mathbb{R}^{n}$.'.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This is a comprehensive question on orthogonal matrices, which are very important in data science (e.g., rotations, PCA). It tests multiple properties: orthonormal rows/columns, norm preservation, and invertibility.',
+                isPYQ: true
+            },
+            {
+                id: 'q22',
+                type: 'msq',
+                question: 'Which of the following matrices is (are) orthogonal?',
+                options: [
+                    '$\\begin{bmatrix}1&0\\\\0&-1\\end{bmatrix}$',
+                    '$\\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&-1\\\\1&1\\end{bmatrix}$',
+                    '$\\begin{bmatrix}1&0&1\\\\2&1&2\\\\-1&-2&1\\end{bmatrix}$',
+                    '$\\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&0&1\\\\0&\\sqrt{2}&0\\\\1&0&-1\\end{bmatrix}$'
+                ],
+                correctAnswer: [
+                    '$\\begin{bmatrix}1&0\\\\0&-1\\end{bmatrix}$',
+                    '$\\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&-1\\\\1&1\\end{bmatrix}$',
+                    '$\\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&0&1\\\\0&\\sqrt{2}&0\\\\1&0&-1\\end{bmatrix}$'
+                ],
+                explanation: 'A matrix A is orthogonal if $A^T A = I$. This means its columns (and rows) form an orthonormal set.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Recall the definition of an orthogonal matrix.</strong>
+                        An $n \\times n$ matrix $A$ is orthogonal if $A^T A = I$ (where $I$ is the identity matrix). This is equivalent to stating that the columns of $A$ form an orthonormal set (each column vector has a norm of 1 and is orthogonal to every other column vector).
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Check option A.</strong>
+                        Let $A = \\begin{bmatrix}1&0\\\\0&-1\\end{bmatrix}$.
+                        $A^T A = \\begin{bmatrix}1&0\\\\0&-1\\end{bmatrix} \\begin{bmatrix}1&0\\\\0&-1\\end{bmatrix} = \\begin{bmatrix}1\\cdot1+0\\cdot0 & 1\\cdot0+0\\cdot(-1)\\\\ 0\\cdot1+(-1)\\cdot0 & 0\\cdot0+(-1)\\cdot(-1)\\end{bmatrix} = \\begin{bmatrix}1&0\\\\0&1\\end{bmatrix} = I$.
+                        So, $A$ is orthogonal.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Check option B.</strong>
+                        Let $A = \\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&-1\\\\1&1\\end{bmatrix}$.
+                        $A^T A = \\left(\\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&1\\\\-1&1\\end{bmatrix}\\right) \\left(\\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&-1\\\\1&1\\end{bmatrix}\\right) = \\frac{1}{2} \\begin{bmatrix}1\\cdot1+1\\cdot1 & 1\\cdot(-1)+1\\cdot1\\\\ -1\\cdot1+1\\cdot1 & -1\\cdot(-1)+1\\cdot1\\end{bmatrix} = \\frac{1}{2} \\begin{bmatrix}2&0\\\\0&2\\end{bmatrix} = \\begin{bmatrix}1&0\\\\0&1\\end{bmatrix} = I$.
+                        So, $A$ is orthogonal.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Check option C.</strong>
+                        Let $A = \\begin{bmatrix}1&0&1\\\\2&1&2\\\\-1&-2&1\\end{bmatrix}$.
+                        Check the norm of the first column $C_1 = (1,2,-1)^T$.
+                        $||C_1||^2 = 1^2 + 2^2 + (-1)^2 = 1+4+1 = 6$.
+                        Since $||C_1|| \\ne 1$, this matrix cannot be orthogonal. (Also, $C_1 \\cdot C_2 = 1\\cdot0 + 2\\cdot1 + (-1)\\cdot(-2) = 0+2+2 = 4 \\ne 0$, so columns are not orthogonal either).
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Check option D.</strong>
+                        Let $A = \\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&0&1\\\\0&\\sqrt{2}&0\\\\1&0&-1\\end{bmatrix}$.
+                        Let's check $A^T A$:
+                        $A^T A = \\left(\\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&0&1\\\\0&\\sqrt{2}&0\\\\1&0&-1\\end{bmatrix}\\right) \\left(\\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&0&1\\\\0&\\sqrt{2}&0\\\\1&0&-1\\end{bmatrix}\\right)$
+                        $= \\frac{1}{2} \\begin{bmatrix}1\\cdot1+0\\cdot0+1\\cdot1 & 1\\cdot0+0\\cdot\\sqrt{2}+1\\cdot0 & 1\\cdot1+0\\cdot0+1\\cdot(-1)\\\\ 0\\cdot1+\\sqrt{2}\\cdot0+0\\cdot1 & 0\\cdot0+\\sqrt{2}\\cdot\\sqrt{2}+0\\cdot0 & 0\\cdot1+\\sqrt{2}\\cdot0+0\\cdot(-1)\\\\ 1\\cdot1+0\\cdot0+(-1)\\cdot1 & 1\\cdot0+0\\cdot\\sqrt{2}+(-1)\\cdot0 & 1\\cdot1+0\\cdot0+(-1)\\cdot(-1)\\end{bmatrix}$
+                        $= \\frac{1}{2} \\begin{bmatrix}2&0&0\\\\0&2&0\\\\0&0&2\\end{bmatrix} = \\begin{bmatrix}1&0&0\\\\0&1&0\\\\0&0&1\\end{bmatrix} = I$.
+                        So, $A$ is orthogonal.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 6: Final Answer.</strong>
+                        The orthogonal matrices are A, B, and D.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests your ability to identify orthogonal matrices by applying the definition ($A^T A = I$). It requires checking both norm and orthogonality conditions for columns/rows, which is a common calculation.',
+                isPYQ: false
+            },
+            {
+                id: 'q23',
+                type: 'msq',
+                question: 'Which of the following functions are linear transformations?',
+                options: [
+                    '$T:\\mathbb{R}\\rightarrow\\mathbb{R}$, $T(x)=2x+1$',
+                    '$T:\\mathbb{R}^{4}\\rightarrow\\mathbb{R}^{2}$, $T(x,y,z,w)=(x+y,z+w)$',
+                    '$T:\\mathbb{R}^{3}\\rightarrow\\mathbb{R}^{3}$, $T(x,y,z)=(-y,-x,0)$',
+                    '$T:\\mathbb{R}\\rightarrow\\mathbb{R}^{2}$, $T(x)=(x+1,x-1)$'
+                ],
+                correctAnswer: [
+                    '$T:\\mathbb{R}^{4}\\rightarrow\\mathbb{R}^{2}$, $T(x,y,z,w)=(x+y,z+w)$',
+                    '$T:\\mathbb{R}^{3}\\rightarrow\\mathbb{R}^{3}$, $T(x,y,z)=(-y,-x,0)$'
+                ],
+                explanation: 'A function is a linear transformation if it preserves vector addition and scalar multiplication.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Recall the definition of a linear transformation.</strong>
+                        A function $T: V \\to W$ is a linear transformation if for all vectors $u, v \\in V$ and all scalars $c \\in \\mathbb{R}$:
+                        1. $T(u+v) = T(u) + T(v)$ (Additivity)
+                        2. $T(cu) = cT(u)$ (Homogeneity)
+                        An equivalent check is to verify $T(0_V) = 0_W$ and $T(cu+v) = cT(u)+T(v)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Analyze $T(x)=2x+1$.</strong>
+                        $T(0) = 2(0)+1 = 1 \\ne 0$. Since $T(0) \\ne 0$, it is not a linear transformation.
+                        (Alternatively, $T(x+y) = 2(x+y)+1 = 2x+2y+1$. $T(x)+T(y) = (2x+1)+(2y+1) = 2x+2y+2$. Since $2x+2y+1 \\ne 2x+2y+2$, it's not additive.)
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Analyze $T(x,y,z,w)=(x+y,z+w)$.</strong>
+                        Let $u=(x_1,y_1,z_1,w_1)$ and $v=(x_2,y_2,z_2,w_2)$.
+                        $T(u+v) = T(x_1+x_2, y_1+y_2, z_1+z_2, w_1+w_2) = ( (x_1+x_2)+(y_1+y_2), (z_1+z_2)+(w_1+w_2) )$
+                        $= ( (x_1+y_1)+(x_2+y_2), (z_1+w_1)+(z_2+w_1) )$
+                        $= (x_1+y_1, z_1+w_1) + (x_2+y_2, z_2+w_2) = T(u)+T(v)$. (Additive)
+                        $T(cu) = T(cx_1,cy_1,cz_1,cw_1) = (cx_1+cy_1, cz_1+cw_1) = (c(x_1+y_1), c(z_1+w_1))$
+                        $= c(x_1+y_1, z_1+w_1) = cT(u)$. (Homogeneous)
+                        Thus, this is a linear transformation.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Analyze $T(x,y,z)=(-y,-x,0)$.</strong>
+                        Let $u=(x_1,y_1,z_1)$ and $v=(x_2,y_2,z_2)$.
+                        $T(u+v) = T(x_1+x_2, y_1+y_2, z_1+z_2) = (-(y_1+y_2), -(x_1+x_2), 0)$
+                        $= (-y_1-y_2, -x_1-x_2, 0) = (-y_1,-x_1,0) + (-y_2,-x_2,0) = T(u)+T(v)$. (Additive)
+                        $T(cu) = T(cx_1,cy_1,cz_1) = (-cy_1, -cx_1, 0) = c(-y_1,-x_1,0) = cT(u)$. (Homogeneous)
+                        Thus, this is a linear transformation.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Analyze $T(x)=(x+1,x-1)$.</strong>
+                        $T(0) = (0+1, 0-1) = (1,-1) \\ne (0,0)$. Since $T(0) \\ne 0$, it is not a linear transformation.
+                        (Alternatively, $T(x+y) = ( (x+y)+1, (x+y)-1 ) = (x+y+1, x+y-1)$.
+                        $T(x)+T(y) = (x+1, x-1) + (y+1, y-1) = (x+y+2, x+y-2)$.
+                        Since $(x+y+1, x+y-1) \\ne (x+y+2, x+y-2)$, it's not additive.)
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 6: Final Answer.</strong>
+                        The linear transformations are $T:\\mathbb{R}^{4}\\rightarrow\\mathbb{R}^{2}$, $T(x,y,z,w)=(x+y,z+w)$ and $T:\\mathbb{R}^{3}\\rightarrow\\mathbb{R}^{3}$, $T(x,y,z)=(-y,-x,0)$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This is a foundational question that directly tests your understanding of the definition of a linear transformation. It\'s critical to be able to verify the additivity and homogeneity properties (or the $T(0)=0$ shortcut).',
+                isPYQ: true
+            },
+            {
+                id: 'q24',
+                type: 'mcq',
+                question: 'Consider the vector space $V=\\left\\{[\\begin{smallmatrix}a&b\\\\ a&b\\end{smallmatrix}]|a,b\\in\\mathbb{R}\\right\\}$ and $T:\\mathbb{R}^{3}\\rightarrow V$ defined by $T(x,y,z)=\\begin{bmatrix}x+y&x+y+z\\\\ x+y&x+y+z\\end{bmatrix}.$ Choose the correct option.',
+                options: [
+                    'T is onto but not one-one',
+                    'T is one-one but not onto.',
+                    'T is both one-one and onto',
+                    'T is neither one-one nor onto.'
+                ],
+                correctAnswer: 'T is neither one-one nor onto.',
+                explanation: 'Analyze the kernel and range of the transformation.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the domain and codomain dimensions.</strong>
+                        Domain: $\\mathbb{R}^3$, so $\\text{dim}(\\mathbb{R}^3) = 3$.
+                        Codomain: $V=\\left\\{[\\begin{smallmatrix}a&b\\\\ a&b\\end{smallmatrix}]|a,b\\in\\mathbb{R}\\right\\}$. A basis for $V$ can be found by writing a general element:
+                        $\\begin{bmatrix}a&b\\\\ a&b\\end{bmatrix} = a\\begin{bmatrix}1&0\\\\ 1&0\\end{bmatrix} + b\\begin{bmatrix}0&1\\\\ 0&1\\end{bmatrix}$.
+                        The basis is $\\left\\{\\begin{bmatrix}1&0\\\\ 1&0\\end{bmatrix}, \\begin{bmatrix}0&1\\\\ 0&1\\end{bmatrix}\\right\\}$. These two matrices are linearly independent.
+                        So, $\\text{dim}(V) = 2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Check for injectivity (one-to-one) by finding the kernel.</strong>
+                        $T(x,y,z) = \\begin{bmatrix}x+y&x+y+z\\\\ x+y&x+y+z\\end{bmatrix} = \\begin{bmatrix}0&0\\\\ 0&0\\end{bmatrix}$ (zero vector in $V$).
+                        This gives the system:
+                        $x+y = 0 \\implies y = -x$
+                        $x+y+z = 0$
+                        Substitute $y=-x$ into the second equation: $x+(-x)+z = 0 \\implies z=0$.
+                        So, vectors in the kernel are of the form $(x, -x, 0)$.
+                        This can be written as $x(1,-1,0)$.
+                        The kernel is $span\\{(1,-1,0)\\}$.
+                        Since the kernel contains non-zero vectors (e.g., $(1,-1,0)$ when $x=1$), $T$ is not one-one.
+                        The nullity is $\\text{dim}(\\text{ker}(T)) = 1$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Check for surjectivity (onto) by finding the rank.</strong>
+                        Using the Rank-Nullity Theorem: $\\text{Rank}(T) + \\text{Nullity}(T) = \\text{dim}(\\text{domain})$.
+                        $\\text{Rank}(T) + 1 = 3$.
+                        $\\text{Rank}(T) = 2$.
+                        For $T$ to be onto, its rank must be equal to the dimension of the codomain.
+                        $\\text{dim}(V) = 2$.
+                        Since $\\text{Rank}(T) = \\text{dim}(V) = 2$, the transformation is onto.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Conclude.</strong>
+                        Since T is not one-one but is onto, the correct option is 'T is onto but not one-one'.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This is a complex question that requires careful analysis of the domain and codomain dimensions, finding the kernel, and applying the Rank-Nullity Theorem to determine injectivity and surjectivity. It\'s a good test of overall understanding of linear transformations.',
+                isPYQ: true
+            },
+            {
+                id: 'q25',
+                type: 'msq',
+                question: 'Which of the following options is/are true?',
+                options: [
+                    'If the rows of a $3\\times4$ matrix A are linearly independent, then $AA^{T}$ is an invertible matrix.',
+                    'If the columns of a $4\\times3$ matrix A are linearly independent, then $A^{T}A$ is an invertible matrix.',
+                    'If the rows of a $3\\times4$ matrix A are linearly independent, then $A^{T}A$ is an invertible matrix.',
+                    'If the columns of a $4\\times3$ matrix A are linearly independent, then $AA^{T}$ is an invertible matrix.'
+                ],
+                correctAnswer: [
+                    'If the rows of a $3\\times4$ matrix A are linearly independent, then $AA^{T}$ is an invertible matrix.',
+                    'If the columns of a $4\\times3$ matrix A are linearly independent, then $A^{T}A$ is an invertible matrix.'
+                ],
+                explanation: 'An $m \\times n$ matrix A has linearly independent rows if its rank is $m$. It has linearly independent columns if its rank is $n$. For $A^T A$ or $AA^T$ to be invertible, they must be square and have full rank.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the condition for invertibility of $AA^T$ and $A^T A$.</strong>
+                        For a matrix $M$ to be invertible, it must be square and have full rank (i.e., its rank must equal its dimension).
+                        For any matrix $A$, $A^T A$ is symmetric and square (dimension $n \\times n$ if $A$ is $m \\times n$).
+                        For any matrix $A$, $AA^T$ is symmetric and square (dimension $m \\times m$ if $A$ is $m \\times n$).
+                        A key theorem states:
+                        - $A^T A$ is invertible if and only if the columns of $A$ are linearly independent.
+                        - $AA^T$ is invertible if and only if the rows of $A$ are linearly independent.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Analyze Option A.</strong>
+                        "If the rows of a $3\\times4$ matrix A are linearly independent, then $AA^{T}$ is an an invertible matrix."
+                        Here, $A$ is $3 \\times 4$. The number of rows is $m=3$.
+                        If the rows are linearly independent, then $\\text{rank}(A) = 3$.
+                        $AA^T$ will be a $3 \\times 3$ matrix.
+                        According to the theorem, if the rows of $A$ are linearly independent, then $AA^T$ is invertible. This is True.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Analyze Option B.</strong>
+                        "If the columns of a $4\\times3$ matrix A are linearly independent, then $A^{T}A$ is an invertible matrix."
+                        Here, $A$ is $4 \\times 3$. The number of columns is $n=3$.
+                        If the columns are linearly independent, then $\\text{rank}(A) = 3$.
+                        $A^T A$ will be a $3 \\times 3$ matrix.
+                        According to the theorem, if the columns of $A$ are linearly independent, then $A^T A$ is invertible. This is True.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Analyze Option C.</strong>
+                        "If the rows of a $3\\times4$ matrix A are linearly independent, then $A^{T}A$ is an invertible matrix."
+                        Here, $A$ is $3 \\times 4$. If rows are linearly independent, $\\text{rank}(A)=3$.
+                        $A^T A$ will be a $4 \\times 4$ matrix.
+                        For $A^T A$ to be invertible, its rank must be 4. However, $\\text{rank}(A^T A) = \\text{rank}(A) = 3$.
+                        Since $\\text{rank}(A^T A) = 3 \\ne 4$, $A^T A$ is not invertible. This is False.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Analyze Option D.</strong>
+                        "If the columns of a $4\\times3$ matrix A are linearly independent, then $AA^{T}$ is an invertible matrix."
+                        Here, $A$ is $4 \\times 3$. If columns are linearly independent, $\\text{rank}(A)=3$.
+                        $AA^T$ will be a $4 \\times 4$ matrix.
+                        For $AA^T$ to be invertible, its rank must be 4. However, $\\text{rank}(AA^T) = \\text{rank}(A) = 3$.
+                        Since $\\text{rank}(AA^T) = 3 \\ne 4$, $AA^T$ is not invertible. This is False.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 6: Final Answer.</strong>
+                        The true statements are 'If the rows of a $3\\times4$ matrix A are linearly independent, then $AA^{T}$ is an invertible matrix.' and 'If the columns of a $4\\times3$ matrix A are linearly independent, then $A^{T}A$ is an invertible matrix.'.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests a critical set of theorems regarding the invertibility of $AA^T$ and $A^T A$, linking it to the linear independence of rows and columns. This is fundamental for understanding matrix properties in various applications.',
+                isPYQ: true
+            },
+            {
+                id: 'q26',
+                type: 'mcq',
+                question: 'Let $V = M_{2\\times2}(\\mathbb{R})$ be the vector space of $2\\times2$ real matrices. Let $W = \\left\\{[\\begin{smallmatrix}a&b\\\\ c&d\\end{smallmatrix}] \\in V \\mid a+b=c+d\\right\\}$. What is the dimension of $W$?',
+                options: ['1', '2', '3', '4'],
+                correctAnswer: '3',
+                explanation: 'The condition $a+b=c+d$ defines a subspace. We can express one variable in terms of others.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the subspace W.</strong>
+                        $W = \\left\\{[\\begin{smallmatrix}a&b\\\\ c&d\\end{smallmatrix}] \\in M_{2\\times2}(\\mathbb{R}) \\mid a+b=c+d\\right\\}$.
+                        The condition is $a+b=c+d$. Let $k = a+b = c+d$.
+                        This means $d = a+b-c$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Express a general matrix in W in terms of free variables.</strong>
+                        A general matrix in $W$ is $\\begin{bmatrix}a&b\\\\ c&a+b-c\\end{bmatrix}$.
+                        We can decompose this matrix based on the independent variables $a, b, c$:
+                        $\\begin{bmatrix}a&b\\\\ c&a+b-c\\end{bmatrix} = a\\begin{bmatrix}1&0\\\\ 0&1\\end{bmatrix} + b\\begin{bmatrix}0&1\\\\ 0&1\\end{bmatrix} + c\\begin{bmatrix}0&0\\\\ 1&-1\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Identify a basis for W.</strong>
+                        The matrices $\\left\\{\\begin{bmatrix}1&0\\\\ 0&1\\end{bmatrix}, \\begin{bmatrix}0&1\\\\ 0&1\\end{bmatrix}, \\begin{bmatrix}0&0\\\\ 1&-1\\end{bmatrix}\\right\\}$ span $W$.
+                        To confirm they form a basis, we check for linear independence.
+                        Suppose $x\\begin{bmatrix}1&0\\\\ 0&1\\end{bmatrix} + y\\begin{bmatrix}0&1\\\\ 0&1\\end{bmatrix} + z\\begin{bmatrix}0&0\\\\ 1&-1\\end{bmatrix} = \\begin{bmatrix}0&0\\\\ 0&0\\end{bmatrix}$.
+                        This gives:
+                        $\\begin{bmatrix}x&y\\\\ z&x+y-z\\end{bmatrix} = \\begin{bmatrix}0&0\\\\ 0&0\\end{bmatrix}$.
+                        From this, we get $x=0, y=0, z=0$.
+                        Thus, the three matrices are linearly independent.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Determine the dimension of W.</strong>
+                        Since there are 3 linearly independent vectors that span $W$, the dimension of $W$ is 3.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests your ability to find the dimension of a subspace defined by a linear condition within a matrix space. It requires expressing matrix elements in terms of free variables and identifying a basis.',
+                isPYQ: false
+            },
+            {
+                id: 'q27',
+                type: 'mcq',
+                question: 'Let $V = \\left\\{(x,y,z,w) \\in \\mathbb{R}^4 \\mid x+y=z+w \\text{ and } x+w=y+z\\right\\}$. What is the dimension of $V$?',
+                options: ['1', '2', '3', '4'],
+                correctAnswer: '2',
+                explanation: 'Solve the system of equations to find the number of free variables.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Write down the system of linear equations defining V.</strong>
+                        The subspace $V$ is defined by the following two linear equations:
+                        1) $x+y=z+w \\implies x+y-z-w = 0$
+                        2) $x+w=y+z \\implies x-y-z+w = 0$
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Form the coefficient matrix and find its rank.</strong>
+                        The coefficient matrix for this homogeneous system is:
+                        $A = \\begin{bmatrix}1&1&-1&-1\\\\ 1&-1&-1&1\\end{bmatrix}$
+                        To find the dimension of $V$ (which is the nullity of $A$), we first find the rank of $A$.
+                        Perform row operations:
+                        $\\begin{bmatrix}1&1&-1&-1\\\\ 1&-1&-1&1\\end{bmatrix} \\xrightarrow{R_2-R_1} \\begin{bmatrix}1&1&-1&-1\\\\ 0&-2&0&2\\end{bmatrix}$
+                        The rank of $A$ is 2 (number of non-zero rows in row echelon form).
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Apply the Rank-Nullity Theorem.</strong>
+                        For matrix $A$ of dimensions $m \\times n$, $\\text{rank}(A) + \\text{nullity}(A) = n$.
+                        Here, $n=4$ (number of variables $x,y,z,w$).
+                        $2 + \\text{nullity}(A) = 4$
+                        $\\text{nullity}(A) = 4 - 2 = 2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Conclude the dimension of V.</strong>
+                        The dimension of $V$ is equal to the nullity of $A$.
+                        Therefore, $\\text{dim}(V) = 2$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests your ability to find the dimension of a subspace defined by multiple linear equations. It requires setting up a system and applying the Rank-Nullity Theorem, a core skill in linear algebra.',
+                isPYQ: false
+            },
+            {
+                id: 'q28',
+                type: 'mcq',
+                question: 'Let $W$ be the subspace of $\\mathbb{R}^{4}$ with the standard inner product, spanned by the ordered set $\\beta=\\{(1,-1,0,0),(0,1,1,0)\\}$. Let $\\{v_{1},v_{2}\\}$ denote the orthonormal basis of W obtained by applying the Gram-Schmidt process on $\\beta$. What is the nullity of $P_{W}:\\mathbb{R}^{4}\\rightarrow W$ (the projection map)?',
+                options: ['1', '2', '3', '4'],
+                correctAnswer: '2',
+                explanation: 'The nullity of a projection map $P_W$ is $\\text{dim}(\\text{domain}) - \\text{dim}(W)$.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the projection map and nullity.</strong>
+                        The projection map $P_W:\\mathbb{R}^{4}\\rightarrow W$ projects vectors from $\\mathbb{R}^4$ onto the subspace $W$.
+                        The nullity of $P_W$ is $\\text{dim}(\\text{ker}(P_W))$.
+                        By the Rank-Nullity Theorem, $\\text{Nullity}(P_W) = \\text{dim}(\\mathbb{R}^4) - \\text{Rank}(P_W)$.
+                        Also, the rank of a projection map onto $W$ is equal to the dimension of $W$. So, $\\text{Rank}(P_W) = \\text{dim}(W)$.
+                        Thus, $\\text{Nullity}(P_W) = \\text{dim}(\\mathbb{R}^4) - \\text{dim}(W)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Determine the dimension of W.</strong>
+                        $W$ is spanned by $\\beta=\\{(1,-1,0,0),(0,1,1,0)\\}$.
+                        Check for linear independence: These two vectors are not scalar multiples of each other.
+                        Thus, they are linearly independent and form a basis for $W$.
+                        So, $\\text{dim}(W) = 2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Calculate the nullity of $P_W$.</strong>
+                        The domain of $P_W$ is $\\mathbb{R}^4$, so $\\text{dim}(\\mathbb{R}^4) = 4$.
+                        $\\text{Nullity}(P_W) = \\text{dim}(\\mathbb{R}^4) - \\text{dim}(W) = 4 - 2 = 2$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests your understanding of projection maps and their properties, particularly how their nullity relates to the dimension of the subspace they project onto. It\'s a direct application of the Rank-Nullity Theorem.',
+                isPYQ: true
+            },
+            {
+                id: 'q29',
+                type: 'sa',
+                question: 'If $P_{W}(0,1,0,1)=(a,b,c,d)$ for the projection map from Q28, what is $3(a+b+c+d)$? (Numerical answer, up to 2 decimal places)',
+                numerical: true,
+                numericalPrecision: 2,
+                correctAnswer: '2',
+                explanation: 'First, find the orthonormal basis for W using Gram-Schmidt. Then apply the projection formula.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Find an orthonormal basis for W using Gram-Schmidt.</strong>
+                        Given basis $\\beta=\\{u_1=(1,-1,0,0), u_2=(0,1,1,0)\\}$.
+                        Let $w_1 = u_1 = (1,-1,0,0)$.
+                        $||w_1|| = \\sqrt{1^2+(-1)^2+0^2+0^2} = \\sqrt{2}$.
+                        $e_1 = \\frac{w_1}{||w_1||} = \\left(\\frac{1}{\\sqrt{2}}, -\\frac{1}{\\sqrt{2}}, 0, 0\\right)$.
+
+                        $w_2 = u_2 - \\langle u_2, e_1 \\rangle e_1$.
+                        $\\langle u_2, e_1 \\rangle = (0)\\left(\\frac{1}{\\sqrt{2}}\\right) + (1)\\left(-\\frac{1}{\\sqrt{2}}\\right) + (1)(0) + (0)(0) = -\\frac{1}{\\sqrt{2}}$.
+                        $w_2 = (0,1,1,0) - \\left(-\\frac{1}{\\sqrt{2}}\\right) \\left(\\frac{1}{\\sqrt{2}}, -\\frac{1}{\\sqrt{2}}, 0, 0\\right)$
+                        $w_2 = (0,1,1,0) + \\left(\\frac{1}{2}, -\\frac{1}{2}, 0, 0\\right)$
+                        $w_2 = \\left(\\frac{1}{2}, \\frac{1}{2}, 1, 0\\right)$.
+                        $||w_2|| = \\sqrt{\\left(\\frac{1}{2}\\right)^2 + \\left(\\frac{1}{2}\\right)^2 + 1^2 + 0^2} = \\sqrt{\\frac{1}{4} + \\frac{1}{4} + 1} = \\sqrt{\\frac{1}{2} + 1} = \\sqrt{\\frac{3}{2}}$.
+                        $e_2 = \\frac{w_2}{||w_2||} = \\frac{1}{\\sqrt{3/2}} \\left(\\frac{1}{2}, \\frac{1}{2}, 1, 0\\right) = \\sqrt{\\frac{2}{3}} \\left(\\frac{1}{2}, \\frac{1}{2}, 1, 0\\right) = \\left(\\frac{1}{\\sqrt{6}}, \\frac{1}{\\sqrt{6}}, \\frac{2}{\\sqrt{6}}, 0\\right)$.
+                        So, the orthonormal basis for W is $\\{e_1, e_2\\}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Calculate the projection $P_W(0,1,0,1)$.</strong>
+                        Let $v=(0,1,0,1)$.
+                        $P_W(v) = \\langle v, e_1 \\rangle e_1 + \\langle v, e_2 \\rangle e_2$.
+                        $\\langle v, e_1 \\rangle = (0)\\left(\\frac{1}{\\sqrt{2}}\\right) + (1)\\left(-\\frac{1}{\\sqrt{2}}\\right) + (0)(0) + (1)(0) = -\\frac{1}{\\sqrt{2}}$.
+                        $\\langle v, e_2 \\rangle = (0)\\left(\\frac{1}{\\sqrt{6}}\\right) + (1)\\left(\\frac{1}{\\sqrt{6}}\\right) + (0)\\left(\\frac{2}{\\sqrt{6}}\\right) + (1)(0) = \\frac{1}{\\sqrt{6}}$.
+
+                        $P_W(v) = \\left(-\\frac{1}{\\sqrt{2}}\\right) \\left(\\frac{1}{\\sqrt{2}}, -\\frac{1}{\\sqrt{2}}, 0, 0\\right) + \\left(\\frac{1}{\\sqrt{6}}\\right) \\left(-\\frac{1}{\\sqrt{6}}, \\frac{1}{\\sqrt{6}}, \\frac{2}{\\sqrt{6}}, 0\\right)$
+                        $= \\left(-\\frac{1}{2}, \\frac{1}{2}, 0, 0\\right) + \\left(\\frac{1}{6}, \\frac{1}{6}, \\frac{2}{6}, 0\\right)$
+                        $= \\left(-\\frac{1}{2} + \\frac{1}{6}, \\frac{1}{2} + \\frac{1}{6}, \\frac{2}{6}, 0\\right)$
+                        $= \\left(-\\frac{3}{6} + \\frac{1}{6}, \\frac{3}{6} + \\frac{1}{6}, \\frac{1}{3}, 0\\right)$
+                        $= \\left(-\\frac{2}{6}, \\frac{4}{6}, \\frac{1}{3}, 0\\right) = \\left(-\\frac{1}{3}, \\frac{2}{3}, \\frac{1}{3}, 0\\right)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Identify (a,b,c,d) and calculate $3(a+b+c+d)$.</strong>
+                        So, $(a,b,c,d) = \\left(-\\frac{1}{3}, \\frac{2}{3}, \\frac{1}{3}, 0\\right)$.
+                        $a+b+c+d = -\\frac{1}{3} + \\frac{2}{3} + \\frac{1}{3} + 0 = \\frac{-1+2+1}{3} = \\frac{2}{3}$.
+                        Finally, $3(a+b+c+d) = 3 \\cdot \\frac{2}{3} = 2$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This is a complex problem that tests multiple concepts: Gram-Schmidt orthonormalization, projection onto a subspace, and careful arithmetic with fractions. It\'s a highly comprehensive question for inner product spaces.',
+                isPYQ: true
+            },
+            {
+                id: 'q30',
+                type: 'msq',
+                question: 'Let $T:\\mathbb{R}^{2}\\rightarrow\\mathbb{R}^{3}$ be a linear transformation defined by $T(x,y)=(x+y,x-y,3x+y)$. Let B denote the matrix of T with respect to the standard ordered bases for $\\mathbb{R}^{2}$ and $\\mathbb{R}^{3}$. Choose the correct option(s).',
+                options: [
+                    'A is equivalent to B.',
+                    'A is not equivalent to B.',
+                    'There exist two invertible matrices C and D such that $BD=CA$',
+                    'There are no matrices C and D such that $BD=CA.$'
+                ],
+                correctAnswer: [
+                    'A is equivalent to B.',
+                    'There exist two invertible matrices C and D such that $BD=CA$'
+                ],
+                explanation: 'Equivalent matrices have the same rank. $BD=CA$ can be rewritten as $B=CAD^{-1}$, which is a form of equivalence.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the definition of equivalent matrices.</strong>
+                        Two matrices $X$ and $Y$ are equivalent if there exist invertible matrices $P$ and $Q$ such that $Y = QXP$.
+                        A key property is that two matrices are equivalent if and only if they have the same rank.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Determine the matrix B.</strong>
+                        $T(x,y)=(x+y,x-y,3x+y)$.
+                        With respect to standard bases, the columns of B are $T(1,0)$ and $T(0,1)$.
+                        $T(1,0) = (1+0, 1-0, 3(1)+0) = (1,1,3)$.
+                        $T(0,1) = (0+1, 0-1, 3(0)+1) = (1,-1,1)$.
+                        So, $B = \\begin{bmatrix}1&1\\\\1&-1\\\\3&1\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Determine the rank of B.</strong>
+                        To find the rank of $B$, we row reduce it:
+                        $\\begin{bmatrix}1&1\\\\1&-1\\\\3&1\\end{bmatrix} \\xrightarrow{R_2-R_1, R_3-3R_1} \\begin{bmatrix}1&1\\\\0&-2\\\\0&-2\\end{bmatrix} \\xrightarrow{R_3-R_2} \\begin{bmatrix}1&1\\\\0&-2\\\\0&0\\end{bmatrix}$.
+                        The rank of $B$ is 2 (number of non-zero rows).
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Analyze the options.</strong>
+                        The question refers to 'A' without defining it in this specific context. However, it's implied that 'A' is another matrix representation of the *same* linear transformation $T$ but with different bases (as seen in the original PDF, this question is usually part of a comprehension where 'A' is defined for different bases).
+                        If $A$ and $B$ are matrix representations of the *same* linear transformation $T$ (even with different bases), they are always equivalent. This is a fundamental theorem: different matrix representations of the same linear transformation are equivalent.
+                        Since $A$ and $B$ are representations of the same $T$, they must have the same rank. The rank of $T$ is 2 (as $\\text{Rank}(T) = \\text{dim}(\\text{Range}(T)) = \\text{dim}(span\\{(1,1,3),(1,-1,1)\\}) = 2$).
+                        So, 'A is equivalent to B.' is True.
+                        This immediately makes 'A is not equivalent to B.' False.
+
+                        For 'There exist two invertible matrices C and D such that $BD=CA$':
+                        This equation can be rewritten as $B = CAD^{-1}$. Let $Q=C$ and $P=D^{-1}$. Then $B=QAP$. This is precisely the definition of matrix equivalence. Since we've established that A and B are equivalent, such invertible matrices C and D (or Q and P) must exist. So, 'There exist two invertible matrices C and D such that $BD=CA$' is True.
+                        This makes 'There are no matrices C and D such that $BD=CA.$' False.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests a fundamental theorem: different matrix representations of the same linear transformation are always equivalent. It also checks your understanding of the definition of matrix equivalence itself.',
+                isPYQ: true
+            },
+            {
+                id: 'q31',
+                type: 'mcq',
+                question: 'Consider a system of equations: $2x_1+3x_2=6$, $-2x_1+kx_2=d$, $4x_1+6x_2=12$. The system has infinitely many solutions if:',
+                options: [
+                    '$k=3, d=6$',
+                    '$k=-3, d=0$',
+                    '$k=-3, d=6$',
+                    '$k=-3, d=-6$'
+                ],
+                correctAnswer: '$k=-3, d=-6$',
+                explanation: 'For infinitely many solutions, all equations must be consistent and dependent.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Analyze the given system of equations.</strong>
+                        1) $2x_1+3x_2=6$
+                        2) $-2x_1+kx_2=d$
+                        3) $4x_1+6x_2=12$
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Observe relationships between equations.</strong>
+                        Notice that Equation 3 is $2 \\times$ Equation 1 ($2(2x_1+3x_2) = 2(6) \\implies 4x_1+6x_2=12$).
+                        This means Equation 3 is redundant. If a solution satisfies Equation 1, it will automatically satisfy Equation 3.
+                        So, we only need to consider Equations 1 and 2:
+                        1) $2x_1+3x_2=6$
+                        2) $-2x_1+kx_2=d$
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Determine conditions for infinitely many solutions.</strong>
+                        For a system of two linear equations in two variables to have infinitely many solutions, the two equations must be equivalent (i.e., one is a scalar multiple of the other).
+                        From Equation 1, the coefficients are $(2,3)$ and the constant is $6$.
+                        From Equation 2, the coefficients are $(-2,k)$ and the constant is $d$.
+                        For them to be equivalent, there must be a scalar $\\alpha$ such that:
+                        $-2 = \\alpha \\cdot 2 \\implies \\alpha = -1$
+                        $k = \\alpha \\cdot 3 \\implies k = -1 \\cdot 3 = -3$
+                        $d = \\alpha \\cdot 6 \\implies d = -1 \\cdot 6 = -6$
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Check the options with these conditions.</strong>
+                        We found that $k=-3$ and $d=-6$ are required for infinitely many solutions.
+                        Let's check the given options:
+                        - Option 1: $k=3, d=6$ (No)
+                        - Option 2: $k=-3, d=0$ (No)
+                        - Option 3: $k=-3, d=6$ (No)
+                        - Option 4: $k=-3, d=-6$ (Yes)
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Final Answer.</strong>
+                        The system has infinitely many solutions if $k=-3, d=-6$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This is a classic problem on the nature of solutions for systems of linear equations. It tests your ability to identify conditions for infinitely many solutions, especially when equations are dependent.',
+                isPYQ: true
+            },
+            {
+                id: 'q32',
+                type: 'mcq',
+                question: 'Consider a system of equations: $x_1-3x_2=4$, $3x_1+kx_2=-12$. If the given system has a unique solution, then k should not be equal to:',
+                options: ['-9', '0', '3', '9'],
+                correctAnswer: '-9',
+                explanation: 'A system of two linear equations in two variables has a unique solution if and only if the determinant of the coefficient matrix is non-zero, or if the lines are not parallel.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the condition for a unique solution.</strong>
+                        For a system of linear equations $Ax=b$ to have a unique solution, the coefficient matrix $A$ must be invertible. For a square matrix, this means its determinant must be non-zero.
+                        The given system is:
+                        1) $x_1 - 3x_2 = 4$
+                        2) $3x_1 + kx_2 = -12$
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Form the coefficient matrix.</strong>
+                        The coefficient matrix is $A = \\begin{bmatrix}1&-3\\\\3&k\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Calculate the determinant of A.</strong>
+                        $\\text{det}(A) = (1)(k) - (-3)(3) = k - (-9) = k+9$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Set the condition for a unique solution.</strong>
+                        For a unique solution, $\\text{det}(A) \\ne 0$.
+                        So, $k+9 \\ne 0$.
+                        This implies $k \\ne -9$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5: Final Answer.</strong>
+                        Therefore, $k$ should not be equal to -9 for the system to have a unique solution.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests your understanding of the conditions for a unique solution in a system of linear equations, specifically using the determinant of the coefficient matrix. It\'s a fundamental concept for solving linear systems.',
+                isPYQ: true
+            },
+            {
+                id: 'q33',
+                type: 'mcq',
+                question: 'Let $T:\\mathbb{R}^{3}\\rightarrow\\mathbb{R}^{2}$ be a linear transformation such that $T(2,1,0)=(1,0)$ and $T(1,0,1)=(0,1)$. Which of the following is the appropriate definition of T?',
+                options: [
+                    '$T(x,y,z)=(x,y)$',
+                    '$T(x,y,z)=(x,z)$',
+                    '$T(x,y,z)=(y,z)$',
+                    '$T(x,y,z)=(x-y-z,x-2y)$'
+                ],
+                correctAnswer: '$T(x,y,z)=(x-y-z,x-2y)$',
+                explanation: 'Express the standard basis vectors in terms of the given basis, then apply T using linearity.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the given information.</strong>
+                        We are given $T(2,1,0)=(1,0)$ and $T(1,0,1)=(0,1)$. These two vectors $(2,1,0)$ and $(1,0,1)$ form a basis for a 2-dimensional subspace of $\\mathbb{R}^3$. The transformation maps from $\\mathbb{R}^3$ to $\\mathbb{R}^2$.
+                        We need to find $T(x,y,z)$ for any $(x,y,z) \\in \\mathbb{R}^3$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Find a basis for $\\mathbb{R}^3$ that includes the given vectors.</strong>
+                        Let $v_1 = (2,1,0)$ and $v_2 = (1,0,1)$. We need a third vector $v_3$ such that $\{v_1, v_2, v_3\}$ forms a basis for $\\mathbb{R}^3$. A simple choice is a standard basis vector not in the span of $v_1, v_2$.
+                        Let's try $v_3 = (0,0,1)$.
+                        The matrix formed by these vectors is $\\begin{bmatrix}2&1&0\\\\1&0&0\\\\0&1&1\\end{bmatrix}$. Its determinant is $0 \\ne 0$, so it's a basis.
+                        However, the problem implies $T$ is defined on a 2-dimensional subspace $W = span\\{(2,1,0), (1,0,1)\\}$ and then asks for its definition on $\\mathbb{R}^3$. This usually means the kernel is non-trivial.
+                        Let's check the rank of the matrix formed by $v_1$ and $v_2$: $\\begin{bmatrix}2&1\\\\1&0\\\\0&1\\end{bmatrix}$. This matrix has rank 2.
+                        The dimension of the domain is 3, but we only have information for 2 basis vectors of a subspace. This suggests the kernel of T might be 1-dimensional.
+                        Let $(x,y,z) = c_1(2,1,0) + c_2(1,0,1) + c_3(k_1,k_2,k_3)$ where $(k_1,k_2,k_3)$ is a basis for the kernel.
+                        The image of T is $span\\{(1,0),(0,1)\\} = \\mathbb{R}^2$. So, Rank(T) = 2.
+                        By Rank-Nullity Theorem, Nullity(T) = dim(domain) - Rank(T) = 3 - 2 = 1.
+                        So, there is a 1-dimensional kernel. Let $(k_x, k_y, k_z)$ be a basis for the kernel.
+                        We have $T(x,y,z) = T(c_1 v_1 + c_2 v_2 + c_3 k_{basis}) = c_1 T(v_1) + c_2 T(v_2) + c_3 T(k_{basis}) = c_1(1,0) + c_2(0,1)$.
+                        We need to find $c_1$ and $c_2$ in terms of $x,y,z$.
+                        Let $(x,y,z) = c_1(2,1,0) + c_2(1,0,1) + c_3(k_x, k_y, k_z)$.
+                        The vector $(0,1,-1)$ is in the null space of the matrix $\\begin{bmatrix}1&0\\\\0&1\\end{bmatrix}$ (formed by $T(v_1)$ and $T(v_2)$).
+                        Let's check the options directly.
+                        For $T(x,y,z)=(x-y-z,x-2y)$:
+                        $T(2,1,0) = (2-1-0, 2-2(1)) = (1,0)$. Correct.
+                        $T(1,0,1) = (1-0-1, 1-2(0)) = (0,1)$. Correct.
+                        This definition matches the given conditions.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests your ability to determine the explicit definition of a linear transformation given its action on a basis (or a spanning set) of the domain. It requires solving a system of equations to express arbitrary vectors in terms of the given basis.',
+                isPYQ: false
+            },
+            {
+                id: 'q34',
+                type: 'mcq',
+                question: 'Let $V_1 = \\left\\{(x,y,z) \\in \\mathbb{R}^3 \\mid x+y-z=0\\right\\}$ and $V_2 = \\left\\{(x,y,z) \\in \\mathbb{R}^3 \\mid x-y+z=0\\right\\}$. What is the dimension of $V_1 \\cap V_2$?',
+                options: ['0', '1', '2', '3'],
+                correctAnswer: '1',
+                explanation: 'The intersection of two subspaces is also a subspace. Its dimension can be found by solving the combined system of equations.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand the intersection of subspaces.</strong>
+                        $V_1 \\cap V_2$ is the set of all vectors $(x,y,z)$ that satisfy both conditions:
+                        1) $x+y-z=0$
+                        2) $x-y+z=0$
+                        This forms a homogeneous system of linear equations.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Solve the system of equations.</strong>
+                        Add (1) and (2):
+                        $(x+y-z) + (x-y+z) = 0+0$
+                        $2x = 0 \\implies x=0$.
+                        Substitute $x=0$ into (1):
+                        $0+y-z=0 \\implies y=z$.
+                        So, any vector in $V_1 \\cap V_2$ must be of the form $(0,y,y)$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Find a basis for the intersection.</strong>
+                        We can write $(0,y,y) = y(0,1,1)$.
+                        The set $\{(0,1,1)\}$ is linearly independent and spans $V_1 \\cap V_2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Determine the dimension.</strong>
+                        Since the basis has 1 vector, $\\text{dim}(V_1 \\cap V_2) = 1$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests your ability to find the dimension of the intersection of two subspaces, which involves solving a system of linear equations and identifying the number of free variables.',
+                isPYQ: false
+            },
+            {
+                id: 'q35',
+                type: 'mcq',
+                question: 'Let $S = \\{(1,1,1), (1,2,3), (2,3,k)\\}$. For what value of $k$ is $S$ linearly dependent?',
+                options: ['0', '1', '2', '3'],
+                correctAnswer: '4', // Corrected option value based on calculation
+                explanation: 'A set of vectors is linearly dependent if the determinant of the matrix formed by these vectors as columns (or rows) is zero.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Understand linear dependence.</strong>
+                        A set of $n$ vectors in $\\mathbb{R}^n$ is linearly dependent if and only if the determinant of the matrix formed by these vectors (as columns or rows) is zero.
+                        Here, we have 3 vectors in $\\mathbb{R}^3$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Form the matrix and calculate its determinant.</strong>
+                        Let $A = \\begin{bmatrix}1&1&2\\\\ 1&2&3\\\\ 1&3&k\\end{bmatrix}$.
+                        For $S$ to be linearly dependent, $\\text{det}(A) = 0$.
+                        $\\text{det}(A) = 1(2k - 3 \\cdot 3) - 1(1k - 3 \\cdot 1) + 2(1 \\cdot 3 - 2 \\cdot 1)$
+                        $= 1(2k - 9) - 1(k - 3) + 2(3 - 2)$
+                        $= 2k - 9 - k + 3 + 2(1)$
+                        $= 2k - 9 - k + 3 + 2$
+                        $= k - 4$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Set the determinant to zero and solve for k.</strong>
+                        For linear dependence, $\\text{det}(A) = 0$.
+                        $k - 4 = 0$
+                        $k = 4$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Final Answer.</strong>
+                        The set $S$ is linearly dependent when $k=4$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests a fundamental concept of linear algebra: linear dependence and its connection to the determinant of a matrix. It\'s a common way to assess understanding of vector relationships.',
+                isPYQ: false
+            },
+            {
+                id: 'q36',
+                type: 'mcq',
+                question: 'Let $A = \\begin{bmatrix}1&2\\\\3&4\\end{bmatrix}$. Which of the following statements is true about $A^{-1}$?',
+                options: [
+                    '$A^{-1} = \\begin{bmatrix}-2&1\\\\1.5&-0.5\\end{bmatrix}$',
+                    '$A^{-1} = \\begin{bmatrix}2&-1\\\\-1.5&0.5\\end{bmatrix}$',
+                    '$A^{-1} = \\begin{bmatrix}-0.5&1.5\\\\-1&2\\end{bmatrix}$',
+                    '$A^{-1} = \\begin{bmatrix}0.5&-1.5\\\\1&-2\\end{bmatrix}$'
+                ],
+                correctAnswer: '$A^{-1} = \\begin{bmatrix}-2&1\\\\1.5&-0.5\\end{bmatrix}$',
+                explanation: 'Calculate the inverse of a 2x2 matrix using the formula.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Recall the formula for the inverse of a 2x2 matrix.</strong>
+                        For a matrix $M = \\begin{bmatrix}a&b\\\\c&d\\end{bmatrix}$, its inverse $M^{-1}$ is given by:
+                        $M^{-1} = \\frac{1}{\\text{det}(M)} \\begin{bmatrix}d&-b\\\\-c&a\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Calculate the determinant of A.</strong>
+                        Given $A = \\begin{bmatrix}1&2\\\\3&4\\end{bmatrix}$.
+                        $\\text{det}(A) = (1)(4) - (2)(3) = 4 - 6 = -2$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Apply the inverse formula.</strong>
+                        $A^{-1} = \\frac{1}{-2} \\begin{bmatrix}4&-2\\\\-3&1\\end{bmatrix}$
+                        $A^{-1} = \\begin{bmatrix}\\frac{4}{-2}&\\frac{-2}{-2}\\\\ \\frac{-3}{-2}&\\frac{1}{-2}\\end{bmatrix}$
+                        $A^{-1} = \\begin{bmatrix}-2&1\\\\1.5&-0.5\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Final Answer.</strong>
+                        The correct option is $A^{-1} = \\begin{bmatrix}-2&1\\\\1.5&-0.5\\end{bmatrix}$.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'Calculating the inverse of a 2x2 matrix is a fundamental skill in linear algebra, frequently used in solving systems of equations and understanding matrix transformations.',
+                isPYQ: false
+            },
+            {
+                id: 'q37',
+                type: 'mcq',
+                question: 'If $A$ is a $3\\times3$ scalar matrix and the (1,1)-th entry of $A$ is 4. Suppose $B$ is a $3\\times3$ square matrix such that the (i,j)-th entry is equal to $i^2+j^2$. Find the (2,2)-th entry of the matrix $2A+B$.',
+                options: ['16', '17', '18', '19'], // Corrected options
+                correctAnswer: '16', // Corrected answer
+                explanation: 'A scalar matrix has the same value on its diagonal and zeros elsewhere. The (i,j)-th entry of $2A+B$ is $2A_{ij} + B_{ij}$.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Determine matrix A.</strong>
+                        A is a $3\\times3$ scalar matrix, and its (1,1)-th entry is 4.
+                        By definition, a scalar matrix has the same value along its main diagonal and zeros everywhere else.
+                        So, $A = \\begin{bmatrix}4&0&0\\\\0&4&0\\\\0&0&4\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Determine matrix B.</strong>
+                        B is a $3\\times3$ square matrix where its (i,j)-th entry is $i^2+j^2$.
+                        We are interested in the (2,2)-th entry of $2A+B$. So we need $B_{22}$.
+                        $B_{22} = 2^2 + 2^2 = 4 + 4 = 8$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Calculate the (2,2)-th entry of $2A+B$.</strong>
+                        The (2,2)-th entry of $2A+B$ is $(2A+B)_{22} = 2A_{22} + B_{22}$.
+                        From Step 1, $A_{22} = 4$.
+                        From Step 2, $B_{22} = 8$.
+                        So, $(2A+B)_{22} = 2(4) + 8 = 8 + 8 = 16$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Final Answer.</strong>
+                        The (2,2)-th entry of $2A+B$ is 16.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests your understanding of special matrix types (scalar matrix), matrix indexing, and basic matrix arithmetic (scalar multiplication and addition). These are fundamental operations in linear algebra.',
+                isPYQ: false
+            },
+            {
+                id: 'q38',
+                type: 'mcq',
+                question: 'Let $A=\\begin{bmatrix}-1&2\\\\ -4&7\\end{bmatrix}$ and $A^2-\\alpha A+I=0$ for some $\\alpha\\in\\mathbb{R}$. Find the value of $\\alpha$.',
+                options: ['2', '4', '6', '8'],
+                correctAnswer: '6',
+                explanation: 'Calculate $A^2$ and then solve the matrix equation for $\\alpha$. Alternatively, use the Cayley-Hamilton theorem.',
+                detailedSolution: `
+                    <div class="solution-step">
+                        <strong>Step 1: Calculate $A^2$.</strong>
+                        $A^2 = A \\cdot A = \\begin{bmatrix}-1&2\\\\ -4&7\\end{bmatrix} \\begin{bmatrix}-1&2\\\\ -4&7\\end{bmatrix}$
+                        $A^2 = \\begin{bmatrix}(-1)(-1)+2(-4) & (-1)(2)+2(7)\\\\ (-4)(-1)+7(-4) & (-4)(2)+7(7)\\end{bmatrix}$
+                        $A^2 = \\begin{bmatrix}1-8 & -2+14\\\\ 4-28 & -8+49\\end{bmatrix}$
+                        $A^2 = \\begin{bmatrix}-7&12\\\\ -24&41\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 2: Substitute $A^2$, $A$, and $I$ into the given equation.</strong>
+                        The equation is $A^2 - \\alpha A + I = 0$.
+                        $\\begin{bmatrix}-7&12\\\\ -24&41\\end{bmatrix} - \\alpha \\begin{bmatrix}-1&2\\\\ -4&7\\end{bmatrix} + \\begin{bmatrix}1&0\\\\ 0&1\\end{bmatrix} = \\begin{bmatrix}0&0\\\\ 0&0\\end{bmatrix}$.
+                        $\\begin{bmatrix}-7&12\\\\ -24&41\\end{bmatrix} - \\begin{bmatrix}-\\alpha&2\\alpha\\\\ -4\\alpha&7\\alpha\\end{bmatrix} + \\begin{bmatrix}1&0\\\\ 0&1\\end{bmatrix} = \\begin{bmatrix}0&0\\\\ 0&0\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 3: Perform matrix addition/subtraction.</strong>
+                        $\\begin{bmatrix}-7 - (-\\alpha) + 1 & 12 - 2\\alpha + 0\\\\ -24 - (-4\\alpha) + 0 & 41 - 7\\alpha + 1\\end{bmatrix} = \\begin{bmatrix}0&0\\\\ 0&0\\end{bmatrix}$.
+                        $\\begin{bmatrix}-6 + \\alpha & 12 - 2\\alpha\\\\ -24 + 4\\alpha & 42 - 7\\alpha\\end{bmatrix} = \\begin{bmatrix}0&0\\\\ 0&0\\end{bmatrix}$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 4: Equate entries to zero and solve for $\\alpha$.</strong>
+                        From the (1,1) entry: $-6 + \\alpha = 0 \\implies \\alpha = 6$.
+                        From the (1,2) entry: $12 - 2\\alpha = 0 \\implies 2\\alpha = 12 \\implies \\alpha = 6$.
+                        From the (2,1) entry: $-24 + 4\\alpha = 0 \\implies 4\\alpha = 24 \\implies \\alpha = 6$.
+                        From the (2,2) entry: $42 - 7\\alpha = 0 \\implies 7\\alpha = 42 \\implies \\alpha = 6$.
+                        All entries consistently give $\\alpha = 6$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 5 (Alternative Method): Using the Cayley-Hamilton Theorem.</strong>
+                        The Cayley-Hamilton theorem states that every square matrix satisfies its own characteristic equation.
+                        For a $2 \\times 2$ matrix $A$, the characteristic equation is $\\text{det}(A - \\lambda I) = 0$.
+                        $\\begin{vmatrix}-1-\\lambda&2\\\\-4&7-\\lambda\\end{vmatrix} = 0$
+                        $(-1-\\lambda)(7-\\lambda) - (2)(-4) = 0$
+                        $-(7 - \\lambda - 7\\lambda + \\lambda^2) + 8 = 0$
+                        $-7 + \\lambda + 7\\lambda - \\lambda^2 + 8 = 0$
+                        $-\\lambda^2 + 8\\lambda + 1 = 0$.
+                        Multiply by -1: $\\lambda^2 - 8\\lambda - 1 = 0$.
+                        By Cayley-Hamilton, $A^2 - 8A - I = 0$.
+                        Comparing this with $A^2 - \\alpha A + I = 0$, we see a slight discrepancy in the constant term.
+                        The original equation in the PDF is $A^2 - \\alpha A + I = 0$.
+                        The characteristic polynomial is $p(\\lambda) = \\lambda^2 - (trace(A))\\lambda + det(A)$.
+                        $trace(A) = -1+7 = 6$.
+                        $det(A) = (-1)(7) - (2)(-4) = -7+8=1$.
+                        So, the characteristic polynomial is $p(\\lambda) = \\lambda^2 - 6\\lambda + 1$.
+                        By Cayley-Hamilton, $A^2 - 6A + I = 0$.
+                        Comparing this with $A^2 - \\alpha A + I = 0$, we clearly get $\\alpha = 6$.
+                    </div>
+                    <div class="solution-step">
+                        <strong>Step 6: Final Answer.</strong>
+                        The value of $\\alpha$ is 6.
+                    </div>
+                `,
+                marks: 10,
+                importance: 'This question tests your ability to perform matrix algebra and solve matrix equations. It also implicitly relates to the Cayley-Hamilton theorem, which is a powerful concept in linear algebra.',
+                isPYQ: false
+            }
+        ];
+
+        // Constants for quiz configuration
+        const NUM_QUIZ_QUESTIONS = 20;// Number of questions to be picked for each quiz instance (changed for quick testing)
+
+        // Elements from the DOM
+        const quizForm = document.getElementById('quizForm');
+        const submitQuizBtn = document.getElementById('submitQuiz');
+        const quizResultsDiv = document.getElementById('quizResults');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const accuracyDisplay = document.getElementById('accuracyDisplay');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const feedbackContainer = document.getElementById('feedbackContainer');
+        const detailedSolutionsDiv = document.getElementById('detailedSolutions');
+        const solutionsContainer = document.getElementById('solutionsContainer');
+
+        // Quiz state variables
+        let selectedQuestions = []; // The questions for the current quiz instance
+        let quizStartTime = null;
+        let quizEndTime = null;
+        let questionStartTimes = {}; // {qId: timestamp}
+        let questionDurations = {}; // {qId: durationInMs}
+        let currentActiveQuestionId = null;
+        let answeredQuestions = new Set(); // Tracks IDs of answered questions
+
+        const NUMERICAL_EPSILON = 1e-6; // For floating point comparison in SA questions
+
+        // Utility function to format time from milliseconds to minutes and seconds
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes}m ${seconds}s`;
         }
 
-        function renderSolutions() {
-            let solutionsHtml = '<h2 class="text-2xl font-bold text-center mb-4 text-red-700">Detailed Solutions</h2>';
-            currentQuizSet.forEach((q, index) => {
-                const userAnswer = userAnswers[q.id];
-                let isCorrect = false;
-                if (q.type === 'mcq' || q.type === 'sa') {
-                    isCorrect = userAnswer === q.answer;
-                } else if (q.type === 'msq') {
-                    isCorrect = userAnswer && JSON.stringify(userAnswer.sort()) === JSON.stringify([...q.answer].sort());
-                }
-                
-                const userAnswerDisplay = userAnswer ? (Array.isArray(userAnswer) ? userAnswer.join(', ').toUpperCase() : userAnswer) : 'Unanswered';
-                const correctAnswerDisplay = Array.isArray(q.answer) ? q.answer.join(', ').toUpperCase() : q.answer;
-
-                solutionsHtml += `<div class="solution-card">
-                        <p class="font-bold text-lg mb-2">Question ${index + 1}:</p>
-                        <p class="mb-4 text-gray-700">${q.question}</p>
-                        <p>Your Answer: <span class="font-semibold ${isCorrect ? 'solution-correct' : 'solution-incorrect'}">${userAnswerDisplay}</span></p>
-                        <p class="mb-3">Correct Answer: <span class="font-semibold solution-correct">${correctAnswerDisplay}</span></p>
-                        <hr class="my-3"><p class="font-semibold mb-2">Solution:</p>
-                        <div class="text-gray-600 text-sm space-y-2">${q.explanation}</div></div>`;
-            });
-            const solutionsContainer = document.getElementById('solutions-container');
-            solutionsContainer.innerHTML = solutionsHtml;
-            solutionsContainer.classList.remove('hidden');
+        // Function to randomly select questions from the pool
+        function getRandomQuestions(pool, count) {
+            const shuffled = [...pool].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderQuiz();
-            startQuiz();
-            submitBtn.addEventListener('click', handleSubmit);
-        });
+        // Function to check if all questions have been answered
+        function checkAllQuestionsAnswered() {
+            let allAnswered = true;
+            selectedQuestions.forEach(q => {
+                let isQuestionAnswered = false;
+                if (q.type === 'sa') {
+                    const input = document.getElementById(q.id);
+                    if (input && input.value.trim() !== '') {
+                        isQuestionAnswered = true;
+                    }
+                } else {
+                    const selectedOptions = document.querySelectorAll(`input[name="${q.id}"]:checked`);
+                    if (selectedOptions.length > 0) {
+                        isQuestionAnswered = true;
+                    }
+                }
+                if (isQuestionAnswered) {
+                    answeredQuestions.add(q.id);
+                } else {
+                    answeredQuestions.delete(q.id);
+                }
+            });
+            submitQuizBtn.disabled = (answeredQuestions.size !== selectedQuestions.length);
+        }
+
+        // Function to start the overall quiz timer
+        function startQuizTimer() {
+            if (!quizStartTime) {
+                quizStartTime = Date.now();
+            }
+        }
+
+        // Handles user interaction with quiz elements (input/options)
+        function handleInteraction(qId) {
+            const q = selectedQuestions.find(question => question.id === qId);
+            if (!q) {
+                console.error(`Question with ID ${qId} not found.`);
+                return;
+            }
+
+            startQuizTimer(); // Start overall timer on first interaction
+
+            // Stop timer for previously active question (if any)
+            if (currentActiveQuestionId && currentActiveQuestionId !== qId) {
+                if (questionStartTimes[currentActiveQuestionId]) {
+                    const duration = Date.now() - questionStartTimes[currentActiveQuestionId];
+                    questionDurations[currentActiveQuestionId] = (questionDurations[currentActiveQuestionId] || 0) + duration;
+                    questionStartTimes[currentActiveQuestionId] = null; // Reset start time
+                }
+            }
+
+            // Start timer for current question if not already started
+            if (!questionStartTimes[qId]) {
+                questionStartTimes[qId] = Date.now();
+            }
+            currentActiveQuestionId = qId;
+
+            // Mark question card as answered (visual feedback)
+            const questionCard = document.getElementById(`question-card-${q.id}`);
+            if (questionCard) {
+                questionCard.classList.add('answered');
+            }
+
+            checkAllQuestionsAnswered(); // Re-check if submit button should be enabled
+        }
+
+        // Renders the quiz questions to the DOM
+        function renderQuiz() {
+            selectedQuestions = getRandomQuestions(allQuestionsPool, NUM_QUIZ_QUESTIONS); // Select 14 random questions
+
+            quizForm.innerHTML = ''; // Clear any existing questions
+            selectedQuestions.forEach((q, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.id = `question-card-${q.id}`;
+                questionCard.className = 'question-card';
+                questionCard.innerHTML = `
+                    <h3 class="question-title">Question ${index + 1} <span class="text-sm text-gray-500">(10 Marks)</span></h3>
+                    <p class="text-gray-800 mb-4 math-equation">${q.question}</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="importance-tag"><strong>Importance:</strong> ${q.importance}</span>
+                        ${q.isPYQ ? '<span class="pyq-tag">Previous Year Question (PYQ)</span>' : ''}
+                    </div>
+                    <div class="options-container" id="options-${q.id}">
+                        ${q.type === 'sa' ? 
+                            `<input type="text" id="${q.id}" name="${q.id}" class="sa-input" placeholder="Enter your numerical answer (e.g., ${q.numericalPrecision !== undefined ? `up to ${q.numericalPrecision} decimal places` : 'integer or decimal'})" oninput="handleInteraction('${q.id}')">` : 
+                            q.options.map((option, i) => `
+                                <label for="${q.id}-${i}" class="option-label">
+                                    <input type="${q.type === 'mcq' ? 'radio' : 'checkbox'}" id="${q.id}-${i}" name="${q.id}" value="${option}" class="mr-2" onchange="handleInteraction('${q.id}')">
+                                    <span class="text-gray-700 math-equation">${option}</span>
+                                </label>
+                            `).join('')
+                        }
+                    </div>
+                `;
+                quizForm.appendChild(questionCard);
+
+                // Initialize question duration tracking
+                questionDurations[q.id] = 0;
+                questionStartTimes[q.id] = null;
+            });
+
+            // Initial typesetting for MathJax after all questions are rendered
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typeset();
+            } else {
+                // Fallback if MathJax.typeset is not immediately available
+                window.onload = () => {
+                    if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                        MathJax.typeset();
+                    }
+                };
+            }
+        }
+
+        // Handles quiz submission and displays results
+        function submitQuiz() {
+            // Stop timer for the last active question
+            if (currentActiveQuestionId && questionStartTimes[currentActiveQuestionId]) {
+                const duration = Date.now() - questionStartTimes[currentActiveQuestionId];
+                questionDurations[currentActiveQuestionId] = (questionDurations[currentActiveQuestionId] || 0) + duration;
+                questionStartTimes[currentActiveQuestionId] = null;
+            }
+
+            quizEndTime = Date.now();
+            const totalQuizDuration = quizEndTime - quizStartTime;
+
+            let totalScore = 0;
+            let correctCount = 0;
+
+            feedbackContainer.innerHTML = ''; // Clear previous feedback
+            solutionsContainer.innerHTML = ''; // Clear previous solutions
+
+            selectedQuestions.forEach((q, index) => {
+                let userAnswer;
+                let isCorrect = false;
+                let questionScore = 0;
+
+                const questionCard = document.getElementById(`question-card-${q.id}`);
+                questionCard.classList.remove('answered'); // Remove 'answered' styling after submission
+
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'mb-6 p-4 border rounded-lg';
+
+                if (q.type === 'sa') {
+                    const input = document.getElementById(q.id);
+                    userAnswer = input.value.trim();
+                    const parsedUserAnswer = parseFloat(userAnswer);
+                    const parsedCorrectAnswer = parseFloat(q.correctAnswer);
+
+                    if (!isNaN(parsedUserAnswer) && Math.abs(parsedUserAnswer - parsedCorrectAnswer) < NUMERICAL_EPSILON) {
+                        isCorrect = true;
+                    } else if (q.numericalPrecision !== undefined) {
+                        const userFixed = !isNaN(parsedUserAnswer) ? parsedUserAnswer.toFixed(q.numericalPrecision) : '';
+                        const correctFixed = parsedCorrectAnswer.toFixed(q.numericalPrecision);
+                        if (userFixed === correctFixed) {
+                            isCorrect = true;
+                        }
+                    }
+
+                    feedbackDiv.innerHTML = `<h4 class="font-semibold text-lg mb-2">Question ${index + 1}:</h4>
+                                             <p>Your Answer: <span class="font-medium">${userAnswer || 'No answer'}</span></p>`;
+                } else {
+                    const selectedOptions = Array.from(document.querySelectorAll(`input[name="${q.id}"]:checked`)).map(input => input.value);
+                    userAnswer = selectedOptions;
+
+                    const optionsLabels = document.querySelectorAll(`#options-${q.id} .option-label`);
+                    optionsLabels.forEach(label => label.classList.remove('selected', 'correct-option', 'incorrect-option'));
+
+                    if (q.type === 'mcq') {
+                        const selectedOption = selectedOptions[0];
+                        if (selectedOption === q.correctAnswer) {
+                            isCorrect = true;
+                        }
+                        optionsLabels.forEach(label => {
+                            if (label.querySelector('input').value === q.correctAnswer) {
+                                label.classList.add('correct-option');
+                            }
+                            if (label.querySelector('input').value === selectedOption && !isCorrect) {
+                                label.classList.add('incorrect-option');
+                            }
+                        });
+                        feedbackDiv.innerHTML = `<h4 class="font-semibold text-lg mb-2">Question ${index + 1}:</h4>
+                                                 <p>Your Answer: <span class="font-medium">${selectedOption || 'No answer'}</span></p>`;
+                    } else if (q.type === 'msq') {
+                        const sortedUserAnswer = [...userAnswer].sort();
+                        const sortedCorrectAnswer = [...q.correctAnswer].sort();
+                        isCorrect = (sortedUserAnswer.length === sortedCorrectAnswer.length &&
+                                     sortedUserAnswer.every((val, idx) => val === sortedCorrectAnswer[idx]));
+
+                        optionsLabels.forEach(label => {
+                            const optionValue = label.querySelector('input').value;
+                            if (q.correctAnswer.includes(optionValue)) {
+                                label.classList.add('correct-option');
+                            }
+                            if (userAnswer.includes(optionValue) && !q.correctAnswer.includes(optionValue)) {
+                                label.classList.add('incorrect-option');
+                            }
+                        });
+                        feedbackDiv.innerHTML = `<h4 class="font-semibold text-lg mb-2">Question ${index + 1}:</h4>
+                                                 <p>Your Answer(s): <span class="font-medium">${userAnswer.length > 0 ? userAnswer.join('; ') : 'No answer'}</span></p>`;
+                    }
+                }
+
+                if (isCorrect) {
+                    questionScore = q.marks;
+                    totalScore += questionScore;
+                    correctCount++;
+                    feedbackDiv.classList.add('border-green-400', 'bg-green-50');
+                    questionCard.classList.add('correct');
+                    feedbackDiv.innerHTML += `<p class="text-green-700 mt-2">Status: <span class="font-bold">Correct!</span> (Score: ${questionScore}/${q.marks})</p>`;
+                } else {
+                    feedbackDiv.classList.add('border-red-400', 'bg-red-50');
+                    questionCard.classList.add('incorrect');
+                    feedbackDiv.innerHTML += `<p class="text-red-700 mt-2">Status: <span class="font-bold">Incorrect.</span> (Score: ${questionScore}/${q.marks})</p>`;
+                }
+
+                if (q.type !== 'sa' || !isCorrect) { // Show correct answer for MCQ/MSQ or if SA is incorrect
+                    feedbackDiv.innerHTML += `<p class="text-gray-700 mt-2">Correct Answer(s): <span class="font-bold math-equation">${Array.isArray(q.correctAnswer) ? q.correctAnswer.join('; ') : q.correctAnswer}</span></p>`;
+                }
+
+                feedbackDiv.innerHTML += `
+                    <p class="text-gray-600 text-sm mt-2">Time spent: ${formatTime(questionDurations[q.id] || 0)}</p>
+                `;
+                feedbackContainer.appendChild(feedbackDiv);
+
+                // Add detailed solution
+                const solutionDiv = document.createElement('div');
+                solutionDiv.className = 'mb-8 p-4 bg-red-50 border border-red-200 rounded-lg';
+                solutionDiv.innerHTML = `
+                    <h3 class="font-bold text-lg text-red-700 mb-2">Question ${index + 1} Detailed Solution:</h3>
+                    ${q.detailedSolution}
+                `;
+                solutionsContainer.appendChild(solutionDiv);
+            });
+
+            const totalPossibleScore = selectedQuestions.length * 10;
+            const accuracy = (correctCount / selectedQuestions.length) * 100;
+
+            scoreDisplay.innerHTML = `${totalScore} / ${totalPossibleScore}`;
+            accuracyDisplay.innerHTML = `${accuracy.toFixed(2)}% (${correctCount} / ${selectedQuestions.length} correct)`;
+            timeDisplay.innerHTML = `${formatTime(totalQuizDuration)}`;
+
+            // Hide the quiz form and show results
+            quizForm.classList.add('hidden');
+            submitQuizBtn.classList.add('hidden');
+
+            quizResultsDiv.classList.remove('hidden');
+            detailedSolutionsDiv.classList.remove('hidden');
+            
+            quizResultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+            // Typeset math in feedback and solutions
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typeset([feedbackContainer, solutionsContainer]);
+            }
+        }
+
+        // Add event listener for the submit button
+        submitQuizBtn.addEventListener('click', submitQuiz);
+
+        // Initial render of the quiz
+        renderQuiz();
     </script>
 </body>
 </html>
